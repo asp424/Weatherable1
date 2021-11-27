@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Погода</string>
+    <string name="krymsk_name">Крымск</string>
+    <string name="chel_name">Челябинск</string>
+    <string name="gismeteo_name">Gismeteo</string>
+    <string name="yandex_name">Yandex</string>
+    <string name="hydromet_name">Гидромет</string>
+    <string name="temp">Температура</string>
+    <string name="humid">Влажность</string>
+    <string name="press">Давление</string>
+    <string name="blue_name">Bluetooth</string>
+    <string name="nov_name">Новороссийск</string>
+    <string name="ana_name">Анапа</string>
+    <string name="gel_name">Геленджик</string>
+    <string name="kur_name">На морях</string>
+    <string name="water_name">вода</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="app_widget_description">This is an app widget description</string>
+</resources>

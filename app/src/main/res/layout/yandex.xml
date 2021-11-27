@@ -1,0 +1,48 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/app_widget_background"
+    android:theme="@style/Theme.Weatherable.AppWidgetContainer">
+    <ImageView
+        android:id="@+id/image_yan"
+        android:layout_width="28dp"
+        android:layout_marginTop="17dp"
+        android:layout_marginStart="10dp"
+        android:layout_alignParentStart="true"
+        android:layout_height="20dp"
+        android:src="@drawable/yan_logo"/>
+
+    <TextView
+        android:layout_alignParentBottom="true"
+        android:id="@+id/yan_text"
+        android:layout_marginBottom="6dp"
+        android:layout_marginStart="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/appwidget_text"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        android:textStyle="italic"/>
+
+    <ImageView
+        android:id="@+id/image_now_yan"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="15dp"
+        android:layout_width="35dp"
+        android:layout_marginTop="6dp"
+        android:layout_alignParentEnd="true"
+        android:layout_height="35dp" />
+
+    <TextView
+        android:id="@+id/yan_time"
+        android:layout_marginBottom="6dp"
+        android:layout_marginEnd="10dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/appwidget_text"
+        android:textColor="#0323F4"
+        android:textSize="14sp"
+        android:textStyle="italic"/>
+</RelativeLayout>
