@@ -4,6 +4,9 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/79822/AndroidStudioProjects/Weatherable/app/src/main/res/drawable/app_widget_background.xml" value="0.1005" />
+        <entry key="..\:/Users/79822/AndroidStudioProjects/Weatherable/app/src/main/res/drawable/gis_a.xml" value="0.114" />
+        <entry key="..\:/Users/79822/AndroidStudioProjects/Weatherable/app/src/main/res/drawable/gis_e.xml" value="0.114" />
+        <entry key="..\:/Users/79822/AndroidStudioProjects/Weatherable/app/src/main/res/drawable/gis_h.xml" value="0.114" />
         <entry key="..\:/Users/79822/AndroidStudioProjects/Weatherable/app/src/main/res/drawable/gis_s_n.xml" value="0.1005" />
         <entry key="..\:/Users/79822/AndroidStudioProjects/Weatherable/app/src/main/res/drawable/gis_t_n.xml" value="0.114" />
         <entry key="..\:/Users/79822/AndroidStudioProjects/Weatherable/app/src/main/res/layout/fragment_main.xml" value="0.13541666666666666" />

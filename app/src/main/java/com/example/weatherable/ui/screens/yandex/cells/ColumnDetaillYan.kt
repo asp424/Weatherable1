@@ -33,7 +33,7 @@ fun ColumnDetailYan(
                     CardDetailYan(
                         time = listHour[i - 4],
                         rain = getString("yan_temp_rain_t$i"),
-                        index = i, temp = getString("yan_temp_tom$i")
+                        index = i - 4, temp = getString("yan_temp_tom$i")
                     )}
             }
             Logo(R.drawable.yan_logo)
