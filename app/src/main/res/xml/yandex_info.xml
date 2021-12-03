@@ -7,7 +7,7 @@
     android:minHeight="80dp"
     android:previewImage="@drawable/yan_logo"
     android:resizeMode="horizontal|vertical"
-    android:minResizeWidth="60dp"
-    android:minResizeHeight="60dp"
+    android:minResizeWidth="50dp"
+    android:minResizeHeight="50dp"
     android:updatePeriodMillis="1800000"
     android:widgetCategory="home_screen"/>

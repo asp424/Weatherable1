@@ -30,7 +30,7 @@ class Yandex : AppWidgetProvider() {
         appWidgetIds: IntArray
     ) {
         for (appWidgetId in appWidgetIds) {
-            CoroutineScope(Dispatchers.Default).launch {
+            CoroutineScope(Dispatchers.IO).launch {
                 updateYanAppWidget(
                     context,
                     appWidgetManager,
@@ -46,17 +46,17 @@ class Yandex : AppWidgetProvider() {
             val watchYanWidget = ComponentName(context!!, Yandex::class.java)
             val watchGisWidget = ComponentName(context, Gismeteo::class.java)
             val watchHydWidget = ComponentName(context, Hydro::class.java)
-            CoroutineScope(Dispatchers.Default).launch {
+            CoroutineScope(Dispatchers.IO).launch {
                 updateGisViews(context) {
                     AppWidgetManager.getInstance(context).updateAppWidget(watchGisWidget, it)
                 }
             }
-            CoroutineScope(Dispatchers.Default).launch {
+            CoroutineScope(Dispatchers.IO).launch {
                 updateYanViews(context) {
                     AppWidgetManager.getInstance(context).updateAppWidget(watchYanWidget, it)
                 }
             }
-            CoroutineScope(Dispatchers.Default).launch {
+            CoroutineScope(Dispatchers.IO).launch {
                 updateHydViews(context) {
                     AppWidgetManager.getInstance(context).updateAppWidget(watchHydWidget, it)
                 }
@@ -76,7 +76,7 @@ class Yandex : AppWidgetProvider() {
             appWidgetId, newOptions
         )
         // appWidgetManager?.updateAppWidget(appWidgetId, getView(context, newOptions))
-        CoroutineScope(Dispatchers.Default).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             updateYanAppWidget(context!!, appWidgetManager!!, appWidgetId)
         }
     }
@@ -100,7 +100,7 @@ suspend fun updateYanViews(context: Context?, function: (RemoteViews) -> Unit) {
     val value = getOnSitesTemps(YAN_URL, YAN_RAIN, 0)!!
     val nowTimeInt = nowTime.rep
     val sunUp = getOnSitesTemps(KRM_URL, GIS_SUN_UP, 0)!!.rep
-    val sunDown = getOnSitesTemps(KRM_URL, GIS_SUN_UP, 1)!!.rep
+    val sunDown = getOnSitesTemps(KRM_URL, GIS_SUN_DOWN, 0)!!.rep
     views.apply {
         setOnClickPendingIntent(R.id.image_yan, getPendingSelfIntent(context,
             "update", Yandex::class.java))

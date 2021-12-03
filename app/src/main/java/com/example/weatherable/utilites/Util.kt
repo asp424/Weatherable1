@@ -57,9 +57,9 @@ val String.sA: String
 val String.sB: String
     get() = this.substringBefore("\">")
 val String.rep: Int
-    get() = this.replace(":", "").toInt()
+    get() = this.filter { it.isDigit() }.toInt()
 val String.repPlus: String
-    get() = this.replace(",", ".").replace("+", "")
+    get() = this.replace(",", ".").replace("+", "").replace(" ", "")
 fun MutableList<String>.addItem(value: String) = run {
     this.apply {
         value.apply {
@@ -119,40 +119,50 @@ fun getIconDayGis(value: String) = when (value) {
     "Пасмурно, небольшой замерзающий дождь" -> R.drawable.gis_u
     "Пасмурно, замерзающий дождь" -> R.drawable.gis_e
     "Облачно, ливневый дождь" -> R.drawable.gis_j
+    "Пасмурно, ливневый дождь" -> R.drawable.gis_l
+    "Малооблачно, ливневые осадки" -> R.drawable.gis_q
+    "Малооблачно, небольшие осадки" -> R.drawable.gis_v
+    "Пасмурно, ливневый снег" -> R.drawable.gis_h
+    "Малооблачно, ливневый дождь" -> R.drawable.gis_r
     else -> R.drawable.logo
 }
 
 fun getIconNightGis(value: String) = when (value) {
+    "Малооблачно, ливневый дождь" -> R.drawable.gis_e_n
+    "Пасмурно, ливневый дождь" -> R.drawable.gis_l
     "Пасмурно, небольшой замерзающий дождь, гололед" -> R.drawable.gis_u
-    "Переменная облачность, сильные осадки" -> R.drawable.gis_o
+    "Облачно, ливневый дождь" -> R.drawable.gis_f_n
+    "Малооблачно, снег" -> R.drawable.gis_x_n
+    "Пасмурно, небольшой снег" -> R.drawable.gis_a
+    "Пасмурно, мокрый снег" -> R.drawable.gis_e
+    "Пасмурно" -> R.drawable.gis_i
+    "Пасмурно, снег" -> R.drawable.gis_h
+    "Облачно, снег" -> R.drawable.gis_s_n
     "Пасмурно, снег с дождём" -> R.drawable.gis_e
-    "Малооблачно, небольшой дождь" -> R.drawable.gis_t
-    "Малооблачно, дождь" -> R.drawable.gis_r
-    "Облачно, небольшой дождь" -> R.drawable.gis_k
     "Пасмурно, небольшой дождь" -> R.drawable.gis_n
     "Пасмурно, дождь" -> R.drawable.gis_l
     "Пасмурно, сильный дождь" -> R.drawable.gis_m
-    "Облачно, дождь" -> R.drawable.gis_j
-    "Переменная облачность, небольшой дождь" -> R.drawable.gis_k
-    "Переменная облачность, дождь" -> R.drawable.gis_j
-    "Пасмурно, снег" -> R.drawable.gis_h
-    "Облачно, снег" -> R.drawable.gis_s
-    "Пасмурно" -> R.drawable.gis_i
-    "Облачно" -> R.drawable.gis_c
-    "Малооблачно" -> R.drawable.gis_g
-    "Малооблачно, поземок" -> R.drawable.gis_g
-    "Малооблачно, снег" -> R.drawable.gis_x
-    "Ясно, поземок" -> R.drawable.gis_b
-    "Малооблачно, ливневый снег" -> R.drawable.gis_f
-    "Пасмурно, мокрый снег" -> R.drawable.gis_e
-    "Переменная облачность" -> R.drawable.gis_c
-    "Переменная облачность, небольшой снег" -> R.drawable.gis_d
-    "Ясно" -> R.drawable.gis_b
-    "Пасмурно, небольшой снег" -> R.drawable.gis_a
-    "Малооблачно, небольшой снег" -> R.drawable.gis_p
-    "Пасмурно, небольшой замерзающий дождь" -> R.drawable.gis_u
     "Пасмурно, замерзающий дождь" -> R.drawable.gis_e
-    "Облачно, ливневый дождь" -> R.drawable.gis_j
+    "Малооблачно" -> R.drawable.gis_c_n
+    "Малооблачно, поземок" -> R.drawable.gis_c_n
+    "Малооблачно, ливневый снег" -> R.drawable.gis_k_n
+    "Облачно" -> R.drawable.gis_a_n
+    "Переменная облачность" -> R.drawable.gis_a_n
+    "Ясно" -> R.drawable.gis_b_n
+    "Ясно, поземок" -> R.drawable.gis_b_n
+    "Малооблачно, небольшой снег" -> R.drawable.gis_d_n
+    "Малооблачно, дождь" -> R.drawable.gis_e_n
+    "Малооблачно, ливневые осадки" -> R.drawable.gis_q_n
+    "Облачно, дождь" -> R.drawable.gis_f_n
+    "Малооблачно, небольшой дождь" -> R.drawable.gis_t_n
+    "Облачно, небольшой дождь" -> R.drawable.gis_h_n
+    "Переменная облачность, сильные осадки" -> R.drawable.gis_g_n
+    "Переменная облачность, небольшой дождь" -> R.drawable.gis_h_n
+    "Переменная облачность, дождь" -> R.drawable.gis_f_n
+    "Переменная облачность, небольшой снег" -> R.drawable.gis_j_n
+    "Пасмурно, небольшой замерзающий дождь" -> R.drawable.gis_u
+    "Малооблачно, небольшие осадки" -> R.drawable.gis_v_n
+    "Пасмурно, ливневый снег" -> R.drawable.gis_h
     else -> R.drawable.logo
 }
 

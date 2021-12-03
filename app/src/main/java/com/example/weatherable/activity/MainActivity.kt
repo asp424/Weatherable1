@@ -31,9 +31,4 @@ class MainActivity : AppCompatActivity() {
                 NavController(viewModel)
             }
     }
-
-    override fun onStop() {
-        super.onStop()
-        //viewModel.mBt.value?.closeConnection()
-    }
 }

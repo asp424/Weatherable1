@@ -28,7 +28,7 @@ class Hydro: AppWidgetProvider() {
         appWidgetIds: IntArray
     ) {
         for (appWidgetId in appWidgetIds) {
-            CoroutineScope(Dispatchers.Default).launch {
+            CoroutineScope(Dispatchers.IO).launch {
                 updateHydAppWidget(context, appWidgetManager, appWidgetId)
             }
         }
@@ -39,17 +39,17 @@ class Hydro: AppWidgetProvider() {
             val watchYanWidget = ComponentName(context!!, Yandex::class.java)
             val watchGisWidget = ComponentName(context, Gismeteo::class.java)
             val watchHydWidget = ComponentName(context, Hydro::class.java)
-            CoroutineScope(Dispatchers.Default).launch {
+            CoroutineScope(Dispatchers.IO).launch {
                 updateGisViews(context) {
                     AppWidgetManager.getInstance(context).updateAppWidget(watchGisWidget, it)
                 }
             }
-            CoroutineScope(Dispatchers.Default).launch {
+            CoroutineScope(Dispatchers.IO).launch {
                 updateYanViews(context) {
                     AppWidgetManager.getInstance(context).updateAppWidget(watchYanWidget, it)
                 }
             }
-            CoroutineScope(Dispatchers.Default).launch {
+            CoroutineScope(Dispatchers.IO).launch {
                 updateHydViews(context) {
                     AppWidgetManager.getInstance(context).updateAppWidget(watchHydWidget, it)
                 }
