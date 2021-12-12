@@ -1,5 +1,6 @@
 package com.example.weatherable.ui.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.*
 import com.example.weatherable.data.repository.Repository
 import com.example.weatherable.data.view_states.InternetResponse
@@ -10,15 +11,17 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class DetailGisViewModel @Inject constructor(private val repository: Repository) : ViewModel(),
-    LifecycleObserver {
+    DefaultLifecycleObserver {
     private val _internetValues: MutableStateFlow<InternetResponse?> =
         MutableStateFlow(InternetResponse.Loading)
     val internetValues = _internetValues.asStateFlow()
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun getGisData() {
+    override fun onResume(owner: LifecycleOwner) {
+        super.onResume(owner)
+        getGisData(owner as Context)
+    }
+    fun getGisData(context: Context) {
         viewModelScope.launch {
-            repository.getGisData().collect {
+            repository.getGisData(context).collect {
                 _internetValues.value = it
             }
         }

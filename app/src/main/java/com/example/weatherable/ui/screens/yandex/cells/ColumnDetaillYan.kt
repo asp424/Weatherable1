@@ -6,8 +6,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import com.example.weatherable.R
 import com.example.weatherable.ui.cells.Header
-import com.example.weatherable.ui.cells.RowCards
 import com.example.weatherable.ui.cells.Logo
+import com.example.weatherable.ui.cells.RowCards
 import org.json.JSONObject
 
 @Composable
@@ -36,7 +36,7 @@ fun ColumnDetailYan(
                         index = i - 4, temp = getString("yan_temp_tom$i")
                     )}
             }
-            Logo(R.drawable.yan_logo)
+            Logo(R.drawable.yan_logo, 1)
         }
     }
 }

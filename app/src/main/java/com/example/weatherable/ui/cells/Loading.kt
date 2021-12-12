@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.weatherable.ui.anim.TextAnim
 import com.example.weatherable.utilites.isOnline
 
 @RequiresApi(Build.VERSION_CODES.M)
@@ -37,12 +38,7 @@ fun Loading(context: Context) {
                 verticalArrangement = Arrangement.Top
             ) {
                 if (isOnline(context)) {
-                    Header(
-                        string = "Загрузка...",
-                        paddingTop = 8.dp, paddingStart = 8.dp,
-                        paddingBottom = 8.dp, paddingEnd = 8.dp,
-                        color = Color.Black
-                    )
+                    TextAnim(text = "Загрузка...")
                 } else {
                     Header(
                         string = "Отсутствует интернет",

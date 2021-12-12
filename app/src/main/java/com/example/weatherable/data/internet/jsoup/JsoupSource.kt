@@ -1,5 +1,6 @@
 package com.example.weatherable.data.internet.jsoup
 
+import android.content.Context
 import android.util.Log
 import com.example.weatherable.data.view_states.InternetResponse
 import com.example.weatherable.utilites.*
@@ -16,7 +17,6 @@ class JsoupSource {
     suspend fun getCityValues(): InternetResponse =
         suspendCoroutine { continuation ->
             CoroutineScope(ioDispatcher).launch {
-                Log.d("My", getOnSitesTemps(KRM_URL, GIS_SUN_UP, 0)!!.rep.toString())
                 continuation.resume(
                     InternetResponse.OnSuccess(
                         JSONObject()
@@ -56,45 +56,51 @@ class JsoupSource {
                 }
             }
         }
-    suspend fun getGisData(): InternetResponse =
+    suspend fun getGisData(context: Context): InternetResponse =
         suspendCoroutine { continuation ->
-            CoroutineScope(ioDispatcher).launch {
+            CoroutineScope(Dispatchers.IO).launch {
+                val listIconTod = getOnSitesTemps(checkedCityUrlGisTod(context), GIS_ICON_LIST, 0, 5)
+                val listIconTom = getOnSitesTemps(checkedCityUrlGisTom(context), GIS_ICON_LIST, 0, 5)
+                val sunUp = getOnSitesTemps(checkedCityUrlGisNow(context), GIS_SUN_UP)
+                val sunDown = getOnSitesTemps(checkedCityUrlGisNow(context), GIS_SUN_DOWN)
                 continuation.resume(
                     InternetResponse.OnSuccess(
                         JSONObject()
-                            .put("gis_temp_tod", getOnSitesTemps(GIS_URL_TOD, GIS_TEMP_TOD, 0, 4))
-                            .put("gis_icon_tod", getOnSitesTemps(GIS_URL_TOD, GIS_ICON_LIST, 0, 5))
-                            .put("gis_temp_tom", getOnSitesTemps(GIS_URL_TOM, GIS_TEMP_TOD, 0, 4))
-                            .put("gis_icon_tom", getOnSitesTemps(GIS_URL_TOM, GIS_ICON_LIST, 0, 5))
-                            .put("gis_sun_up", getOnSitesTemps(KRM_URL, GIS_SUN_UP))
-                            .put("gis_sun_down", getOnSitesTemps(KRM_URL, GIS_SUN_DOWN)
-                    )
+                            .put("gis_temp_tod", getOnSitesTemps(checkedCityUrlGisTod(context), GIS_TEMP_TOD, 0, 4))
+                            .put("gis_icon_tod", if (listIconTod!!.isEmpty())
+                                getOnSitesTemps(checkedCityUrlGisTod(context), GIS_ICON_LIST1, 0, 5) else listIconTod)
+                            .put("gis_temp_tom", getOnSitesTemps(checkedCityUrlGisTom(context), GIS_TEMP_TOD, 0, 4))
+                            .put("gis_icon_tom", if (listIconTom!!.isEmpty())
+                                getOnSitesTemps(checkedCityUrlGisTom(context), GIS_ICON_LIST1, 0, 5) else listIconTom)
+                            .put("gis_sun_up", if (sunUp!!.isEmpty()) getOnSitesTemps(checkedCityUrlGisNow(context), GIS_SUN_UP1) else sunUp)
+                            .put("gis_sun_down", if (sunDown!!.isEmpty()) getOnSitesTemps(checkedCityUrlGisNow(context), GIS_SUN_DOWN1) else sunDown
+                            )
                     )
                 )
             }
         }
 
-    suspend fun getYanData(): InternetResponse =
+    suspend fun getYanData(context: Context): InternetResponse =
         suspendCoroutine { continuation ->
-            CoroutineScope(ioDispatcher).launch {
+            CoroutineScope(Dispatchers.IO).launch {
                 continuation.resume(
                     InternetResponse.OnSuccess(
                         JSONObject().apply {
                             for (i in 0..3) {
-                                put("yan_temp_tod$i", valueT(i))
-                                put("yan_temp_rain$i", valueR(i))
+                                put("yan_temp_tod$i", valueT(i, context))
+                                put("yan_temp_rain$i", valueR(i, context))
                             }
                             for (i in 4..7) {
-                                put("yan_temp_tom$i", valueT(i))
-                                put("yan_temp_rain_t$i", valueR(i))
+                                put("yan_temp_tom$i", valueT(i, context))
+                                put("yan_temp_rain_t$i", valueR(i, context))
                             }
                         })
                 )
             }
         }
 
-    private suspend fun valueT(i: Int) = getOnSitesTemps(YAN_URL_DETAILS, YAN_TOD_DETAIL_TEMP, i)
-    private suspend fun valueR(i: Int) = getOnSitesTemps(YAN_URL_DETAILS, YAN_TOD_DETAIL_RAIN, i)
+    private suspend fun valueT(i: Int, context: Context) = getOnSitesTemps(checkedCityUrlYanDet(context), YAN_TOD_DETAIL_TEMP, i)
+    private suspend fun valueR(i: Int, context: Context) = getOnSitesTemps(checkedCityUrlYanDet(context), YAN_TOD_DETAIL_RAIN, i)
 }
 
 suspend fun getOnSitesTemps(

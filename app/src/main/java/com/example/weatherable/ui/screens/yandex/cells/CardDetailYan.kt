@@ -14,9 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
-import com.example.weatherable.utilites.getIconDayGis
 import com.example.weatherable.utilites.getIconDayYan
-import com.example.weatherable.utilites.getIconNightGis
 import com.example.weatherable.utilites.getIconNightYan
 
 @Composable

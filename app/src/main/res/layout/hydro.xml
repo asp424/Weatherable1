@@ -10,7 +10,12 @@
         android:layout_alignParentTop="true"
         android:layout_height="60dp"
         android:src="@drawable/logo_g"/>
-
+    <ProgressBar
+        android:id="@+id/progress_hyd"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
     <TextView
         android:layout_alignParentBottom="true"
         android:id="@+id/appwidget_text"

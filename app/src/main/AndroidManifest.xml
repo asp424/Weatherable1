@@ -38,17 +38,6 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/yandex_info" />
         </receiver>
-        <receiver
-            android:name=".app_widgets.Hydro"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/hydro_info" />
-        </receiver>
         <activity
             android:name=".activity.DetailGisActivity"
             android:exported="false"

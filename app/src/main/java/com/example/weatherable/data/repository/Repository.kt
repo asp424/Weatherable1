@@ -1,5 +1,6 @@
 package com.example.weatherable.data.repository
 
+import android.content.Context
 import com.example.weatherable.data.bluetooth.BluetoothSource
 import com.example.weatherable.data.internet.jsoup.JsoupSource
 import com.example.weatherable.data.internet.retrofit.RestSource
@@ -30,10 +31,10 @@ constructor(
     fun clearPressureList() = bluetoothSource.clearPressureList()
     fun clearTempsList() = bluetoothSource.clearTempList()
 
-    suspend fun getGisData(): Flow<InternetResponse> = flow {
-        emit(jsoupSource.getGisData())
+    suspend fun getGisData(context: Context): Flow<InternetResponse> = flow {
+        emit(jsoupSource.getGisData(context))
     }
-    suspend fun getYanData(): Flow<InternetResponse> = flow {
-        emit(jsoupSource.getYanData())
+    suspend fun getYanData(context: Context): Flow<InternetResponse> = flow {
+        emit(jsoupSource.getYanData(context))
     }
 }

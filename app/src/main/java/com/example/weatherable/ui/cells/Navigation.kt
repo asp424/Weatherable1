@@ -14,6 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.weatherable.ui.screens.FeatureScreen
+import com.example.weatherable.ui.screens.Settings
 import com.example.weatherable.ui.screens.WeatherScreen
 import com.example.weatherable.ui.viewmodel.MainViewModel
 
@@ -22,7 +23,7 @@ import com.example.weatherable.ui.viewmodel.MainViewModel
 fun NavController(viewModel: MainViewModel) {
     Surface(color = Color.Green, modifier = Modifier.fillMaxSize()) {
         val navController = rememberNavController()
-        val bottomItems = listOf("Погода", "Прогноз")
+        val bottomItems = listOf("Погода", "Настройки")
         Scaffold(
             bottomBar = {
                 BottomNavigation(backgroundColor = Color.Black) {
@@ -46,8 +47,8 @@ fun NavController(viewModel: MainViewModel) {
                 composable("Погода") {
                     WeatherScreen(viewModel)
                 }
-                composable("Прогноз") {
-                    FeatureScreen()
+                composable("Настройки") {
+                    Settings()
                 }
             }
 

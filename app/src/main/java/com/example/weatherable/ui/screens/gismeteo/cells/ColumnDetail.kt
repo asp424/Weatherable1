@@ -34,6 +34,6 @@ fun ColumnDetail(
                 CardDetailGis(i, listSkyTom[4 + i], item, 2..3, 4 + i)
             }
         })
-        Logo(R.drawable.gismeteo_logo)
+        Logo(R.drawable.gismeteo_logo, 0)
     }
 }

@@ -4,11 +4,10 @@ import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.RemoteViews
+import android.view.View
 import com.example.weatherable.R
 import com.example.weatherable.activity.DetailYanActivity
 import com.example.weatherable.data.internet.jsoup.getOnSitesTemps
@@ -31,6 +30,7 @@ class Yandex : AppWidgetProvider() {
     ) {
         for (appWidgetId in appWidgetIds) {
             CoroutineScope(Dispatchers.IO).launch {
+                setStateScreen(context, appWidgetId, "yan")
                 updateYanAppWidget(
                     context,
                     appWidgetManager,
@@ -43,22 +43,17 @@ class Yandex : AppWidgetProvider() {
     override fun onReceive(context: Context?, intent: Intent?) {
         super.onReceive(context, intent)
         if (intent?.action == "update") {
-            val watchYanWidget = ComponentName(context!!, Yandex::class.java)
-            val watchGisWidget = ComponentName(context, Gismeteo::class.java)
-            val watchHydWidget = ComponentName(context, Hydro::class.java)
+            val appWidgetManager = AppWidgetManager.getInstance(context)
             CoroutineScope(Dispatchers.IO).launch {
-                updateGisViews(context) {
-                    AppWidgetManager.getInstance(context).updateAppWidget(watchGisWidget, it)
+                updateGisViews(context, appWidgetManager) {
+                    appWidgetManager
+                        .updateAppWidget(getStateScreen(context!!, "gis"), VIEWS_GIS)
                 }
             }
             CoroutineScope(Dispatchers.IO).launch {
-                updateYanViews(context) {
-                    AppWidgetManager.getInstance(context).updateAppWidget(watchYanWidget, it)
-                }
-            }
-            CoroutineScope(Dispatchers.IO).launch {
-                updateHydViews(context) {
-                    AppWidgetManager.getInstance(context).updateAppWidget(watchHydWidget, it)
+                updateYanViews(context, appWidgetManager) {
+                    appWidgetManager
+                        .updateAppWidget(getStateScreen(context!!, "yan"), VIEWS_YAN)
                 }
             }
         }
@@ -88,36 +83,55 @@ internal suspend fun updateYanAppWidget(
     appWidgetManager: AppWidgetManager,
     appWidgetId: Int
 ) {
-    updateYanViews(context) {
-        appWidgetManager.updateAppWidget(appWidgetId, it)
+    updateYanViews(context, appWidgetManager) {
+        appWidgetManager.updateAppWidget(appWidgetId, VIEWS_YAN)
     }
 }
 
 @SuppressLint("SimpleDateFormat", "UnspecifiedImmutableFlag")
-suspend fun updateYanViews(context: Context?, function: (RemoteViews) -> Unit) {
-    val nowTime = SimpleDateFormat("H:mm").format(Calendar.getInstance().time)
-    val views = RemoteViews(context?.packageName, R.layout.yandex)
-    val value = getOnSitesTemps(YAN_URL, YAN_RAIN, 0)!!
-    val nowTimeInt = nowTime.rep
-    val sunUp = getOnSitesTemps(KRM_URL, GIS_SUN_UP, 0)!!.rep
-    val sunDown = getOnSitesTemps(KRM_URL, GIS_SUN_DOWN, 0)!!.rep
-    views.apply {
-        setOnClickPendingIntent(R.id.image_yan, getPendingSelfIntent(context,
-            "update", Yandex::class.java))
-        setOnClickPendingIntent(R.id.image_now_yan,
-            PendingIntent.getActivity(context, 0,
+suspend fun updateYanViews(context: Context?, appWidgetManager: AppWidgetManager, function: () -> Unit) {
+    VIEWS_YAN.apply {
+        setViewVisibility(R.id.progress_yan, View.VISIBLE)
+        appWidgetManager.updateAppWidget(getStateScreen(context!!, "yan"), this)
+        val nowTime = SimpleDateFormat("H:mm").format(Calendar.getInstance().time)
+        val sunUpPrOne = getOnSitesTemps(checkedCityUrlGisNow(context), GIS_SUN_UP, 0)!!
+        val sunDownPrOne = getOnSitesTemps(checkedCityUrlGisNow(context), GIS_SUN_DOWN, 0)!!
+        val value = getOnSitesTemps(checkedCityUrlYanNow(context), YAN_RAIN, 0)!!
+        val sunUp = if (sunUpPrOne.isEmpty())
+            getOnSitesTemps(checkedCityUrlGisNow(context), GIS_SUN_UP1, 0)!!.rep else sunUpPrOne.rep
+        val sunDown = if (sunDownPrOne.isEmpty())
+            getOnSitesTemps(checkedCityUrlGisNow(context), GIS_SUN_DOWN1, 0)!!.rep else sunDownPrOne.rep
+        setOnClickPendingIntent(
+            R.id.image_yan, getPendingSelfIntent(
+                context,
+                "update", Yandex::class.java
+            )
+        )
+        setOnClickPendingIntent(
+            R.id.image_now_yan,
+            PendingIntent.getActivity(
+                context, 0,
                 Intent(context, DetailYanActivity::class.java)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK), 0))
-        setTextViewText(R.id.yan_text, getOnSitesTemps(YAN_URL,
-            YAN_TEMP, 1)?.replace("+", "") + " °C")
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK), 0
+            )
+        )
+        setTextViewText(
+            R.id.yan_text, getOnSitesTemps(
+                checkedCityUrlYanNow(context),
+                YAN_TEMP, 1
+            )?.repPlus + " °C"
+        )
         setTextViewText(R.id.yan_time, nowTime)
-    }
-    if (nowTimeInt in sunUp..sunDown || nowTimeInt in sunDown..sunUp
-    ) {
-        views.setImageViewResource(R.id.image_now_yan, getIconDayYan(value))
-        function(views)
-    } else {
-        views.setImageViewResource(R.id.image_now_yan, getIconNightYan(value))
-        function(views)
+
+        if (nowTime.rep in sunUp..sunDown || nowTime.rep in sunDown..sunUp
+        ) {
+            setViewVisibility(R.id.progress_yan, View.INVISIBLE)
+            setImageViewResource(R.id.image_now_yan, getIconDayYan(value))
+            function()
+        } else {
+            setViewVisibility(R.id.progress_yan, View.INVISIBLE)
+            setImageViewResource(R.id.image_now_yan, getIconNightYan(value))
+            function()
+        }
     }
 }
