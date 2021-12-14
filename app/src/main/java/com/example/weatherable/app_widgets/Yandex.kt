@@ -122,7 +122,7 @@ suspend fun updateYanViews(context: Context?, appWidgetManager: AppWidgetManager
             )?.repPlus + " °C"
         )
         setTextViewText(R.id.yan_time, nowTime)
-
+        setTextViewText(R.id.city_yan, getCity(context))
         if (nowTime.rep in sunUp..sunDown || nowTime.rep in sunDown..sunUp
         ) {
             setViewVisibility(R.id.progress_yan, View.INVISIBLE)

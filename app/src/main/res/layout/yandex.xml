@@ -11,6 +11,16 @@
         android:layout_alignParentStart="true"
         android:layout_height="20dp"
         android:src="@drawable/yan_logo"/>
+    <TextView
+        android:id="@+id/city_yan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="8sp"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="2dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"/>
     <ProgressBar
         android:id="@+id/progress_yan"
         android:visibility="gone"
@@ -20,7 +30,7 @@
     <TextView
         android:layout_alignParentBottom="true"
         android:id="@+id/yan_text"
-        android:layout_marginBottom="6dp"
+        android:layout_marginBottom="10dp"
         android:layout_marginStart="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -40,7 +50,7 @@
 
     <TextView
         android:id="@+id/yan_time"
-        android:layout_marginBottom="6dp"
+        android:layout_marginBottom="10dp"
         android:layout_marginEnd="10dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"

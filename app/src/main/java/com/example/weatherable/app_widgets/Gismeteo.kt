@@ -97,6 +97,7 @@ suspend fun updateGisViews(
             getOnSitesTemps(checkedCityUrlGisNow(context), GIS_SUN_DOWN1, 0)!!.rep else sunDownPrOne.rep
         val value = getOnSitesTemps(checkedCityUrlGisNow(context), GIS_DIV_TAG, flag = 3)?.sA?.sB!!
         setTextViewText(R.id.gis_time, nowTime)
+        setTextViewText(R.id.city_gis, getCity(context))
         setOnClickPendingIntent(
             R.id.image_now_gis,
             PendingIntent.getActivity(
