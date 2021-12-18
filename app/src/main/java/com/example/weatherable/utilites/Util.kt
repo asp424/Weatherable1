@@ -84,6 +84,7 @@ fun MutableList<String>.addToList(value: String) {
 }
 
 fun getIconDayGis(value: String) = when (value) {
+    "Пасмурно, небольшие осадки" -> R.drawable.gis_u
     "Облачно, небольшой снег" -> R.drawable.gis_d
     "Пасмурно, снежные зёрна" -> R.drawable.gis_h
     "Пасмурно, дымка" -> R.drawable.gis_i
@@ -135,6 +136,7 @@ fun getIconDayGis(value: String) = when (value) {
 }
 
 fun getIconNightGis(value: String) = when (value) {
+    "Пасмурно, небольшие осадки" -> R.drawable.gis_u
     "Облачно, небольшой снег" -> R.drawable.gis_j_n
     "Пасмурно, снежные зёрна" -> R.drawable.gis_h
     "Пасмурно, дымка" -> R.drawable.gis_i
