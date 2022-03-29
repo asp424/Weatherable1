@@ -34,7 +34,6 @@ import com.example.weatherable.ui.viewmodel.MainViewModel
 import com.example.weatherable.utilites.getStringWasForChat
 
 @SuppressLint("UnrememberedMutableState")
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun TableCard(visible: Boolean, viewModel: MainViewModel, onClick: () -> Unit) {

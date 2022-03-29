@@ -12,7 +12,7 @@ import com.example.weatherable.R
 import java.text.SimpleDateFormat
 import java.util.*
 
-@RequiresApi(Build.VERSION_CODES.M)
+
 fun isOnline(context: Context): Boolean {
     val connectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

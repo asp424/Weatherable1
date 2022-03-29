@@ -95,7 +95,7 @@ fun Chelyabinsk(chelTemp: String) {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun RealWeather(viewModel: MainViewModel) {
@@ -301,9 +301,7 @@ fun RealWeather(viewModel: MainViewModel) {
         }
 
     }
-    TableCard(visible = visibleCard, viewModel = viewModel, onClick = {
-
-    })
+    Table(visible = visibleCard, viewModel = viewModel)
 }
 
 

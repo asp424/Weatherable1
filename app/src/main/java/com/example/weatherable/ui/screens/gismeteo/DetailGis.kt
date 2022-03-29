@@ -14,7 +14,6 @@ import com.example.weatherable.ui.viewmodel.DetailGisViewModel
 import com.example.weatherable.utilites.addItem
 import com.example.weatherable.utilites.addToList
 
-@RequiresApi(Build.VERSION_CODES.M)
 @Composable
 fun DetailGis(viewModel: DetailGisViewModel) {
     val values by remember(viewModel) { viewModel.internetValues }.collectAsState()

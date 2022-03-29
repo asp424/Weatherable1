@@ -18,7 +18,7 @@ interface BluetoothDataDao {
     @Query("select * from temp_table")
     fun getAllItemsTemp(): List<TempModel>?
     @Query("select * from pressure_table")
-    fun getAllItemsPres(): List<PressureModel>?
+    fun getAllItemsPres(): List<PressureModel>
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertOrUpdateItemTemp(item: TempModel): Long
     @Insert(onConflict = OnConflictStrategy.REPLACE)

@@ -27,7 +27,7 @@ constructor(
 
 
     fun getAllTemps(): List<TempModel>? = bluetoothSource.getAllTemps()
-    fun getAllPressure(): List<PressureModel>? = bluetoothSource.getAllPressure()
+    fun getAllPressure(): List<PressureModel> = bluetoothSource.getAllPressure()
     fun clearPressureList() = bluetoothSource.clearPressureList()
     fun clearTempsList() = bluetoothSource.clearTempList()
 

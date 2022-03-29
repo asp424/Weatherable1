@@ -15,7 +15,6 @@ import com.example.weatherable.ui.viewmodel.DetailYanViewModel
 
 
 @SuppressLint("SimpleDateFormat")
-@RequiresApi(Build.VERSION_CODES.M)
 @Composable
 fun DetailYan(viewModel: DetailYanViewModel) {
     val values by remember(viewModel) { viewModel.internetValues }.collectAsState()

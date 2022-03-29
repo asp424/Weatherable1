@@ -18,7 +18,6 @@ class DetailGisActivity : AppCompatActivity() {
     @Inject
     lateinit var viewModelFactory: Lazy<ViewModelProvider.Factory>
 
-    @RequiresApi(Build.VERSION_CODES.M)
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,5 +31,4 @@ class DetailGisActivity : AppCompatActivity() {
             DetailGis(viewModel)
         }
     }
-
 }

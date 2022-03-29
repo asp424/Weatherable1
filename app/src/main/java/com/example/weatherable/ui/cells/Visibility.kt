@@ -26,5 +26,4 @@ fun Visibility(visible: Boolean, content: @Composable (AnimatedVisibilityScope.(
     ) {
         content(this)
     }
-
 }

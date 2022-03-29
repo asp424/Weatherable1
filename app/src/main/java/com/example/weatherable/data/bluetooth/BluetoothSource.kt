@@ -2,6 +2,7 @@ package com.example.weatherable.data.bluetooth
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothSocket
+import android.os.Build
 import com.example.weatherable.data.room.bluetooth_db.BluetoothDataDao
 import com.example.weatherable.data.room.bluetooth_db.models.PressureModel
 import com.example.weatherable.data.room.bluetooth_db.models.TempModel
@@ -89,7 +90,7 @@ class BluetoothSource @Inject constructor(private val bluetoothDataDao: Bluetoot
                                     bluetoothSocket?.close()
                                 }.onFailure { e ->
                                     trySend(BluetoothResponse.Error(e.message.toString()))
-                                }.onSuccess { btAdapter?.disable()
+                                }.onSuccess { //btAdapter?.disable()
                                 }
                             }
                                 .onFailure { e -> trySend(BluetoothResponse.Error(e.message.toString())) }
@@ -100,13 +101,13 @@ class BluetoothSource @Inject constructor(private val bluetoothDataDao: Bluetoot
         }
         awaitClose {
             runCatching { bluetoothSocket?.close() }.onSuccess {
-                btAdapter?.disable()
+                //btAdapter?.disable()
                 trySendBlocking(BluetoothResponse.Wait)
             }.onFailure { e -> trySendBlocking(BluetoothResponse.Error(e.message.toString())) }
         }
     }
    fun getAllTemps(): List<TempModel>? = bluetoothDataDao.getAllItemsTemp()
-   fun getAllPressure(): List<PressureModel>? = bluetoothDataDao.getAllItemsPres()
+   fun getAllPressure(): List<PressureModel> = bluetoothDataDao.getAllItemsPres()
    fun clearPressureList() = bluetoothDataDao.deleteAllPres()
    fun clearTempList() = bluetoothDataDao.deleteAllTemp()
 }

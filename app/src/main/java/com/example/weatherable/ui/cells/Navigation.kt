@@ -1,7 +1,5 @@
 package com.example.weatherable.ui.cells
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -13,12 +11,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.weatherable.ui.screens.FeatureScreen
 import com.example.weatherable.ui.screens.Settings
 import com.example.weatherable.ui.screens.WeatherScreen
 import com.example.weatherable.ui.viewmodel.MainViewModel
 
-@RequiresApi(Build.VERSION_CODES.M)
 @Composable
 fun NavController(viewModel: MainViewModel) {
     Surface(color = Color.Green, modifier = Modifier.fillMaxSize()) {
@@ -35,7 +31,14 @@ fun NavController(viewModel: MainViewModel) {
                                     popUpTo(screen)
                                 }
                             },
-                            label = { WaterName(string = screen, color = Color.White, paddingStart = 0.dp, paddingTop = 10.dp) },
+                            label = {
+                                WaterName(
+                                    string = screen,
+                                    color = Color.White,
+                                    paddingStart = 0.dp,
+                                    paddingTop = 10.dp
+                                )
+                            },
                             icon = {
                                 Icon(Icons.Default.WbSunny, "ass", tint = Color.White)
                             })

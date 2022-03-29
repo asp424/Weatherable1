@@ -29,20 +29,17 @@ class MainViewModel @Inject constructor(private val repository: Repository) :
     private val _pointsList: MutableStateFlow<List<Offset>?> =
         MutableStateFlow(emptyList())
     val pointsList = _pointsList.asStateFlow()
-    private val _presList: MutableStateFlow<List<PressureModel>?> =
+    private val _presList: MutableStateFlow<List<PressureModel>> =
         MutableStateFlow(emptyList())
     val presList = _presList.asStateFlow()
     private var intJob: Job? = null
 
-    @RequiresApi(Build.VERSION_CODES.M)
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun getJsoupData() {
         _bluetoothValues.value = BluetoothResponse.Start
         intJob?.cancel()
         intJob = viewModelScope.launch {
-            repository.getJsoupData().collect {
-                _internetValues.value = it
-            }
+            repository.getJsoupData().collect { _internetValues.value = it }
         }
         intJob?.start()
     }
@@ -82,18 +79,7 @@ class MainViewModel @Inject constructor(private val repository: Repository) :
     fun getPresForTable(){
         viewModelScope.launch(Dispatchers.IO) {
             if (repository.getAllPressure()!!.isNotEmpty())
-            {
-                val oX = repository.getAllPressure()?.get(0)?.id?.toFloat()
-                val oY = repository.getAllPressure()?.get(0)?.pressure?.toFloat()!!
-                val listPoints = mutableListOf<Offset>()
                 _presList.value = repository.getAllPressure()
-                repository.getAllPressure()?.forEach {
-                    listPoints.add(Offset(x = ((((it.id.toFloat()) - oX!!)/10000) + 110f)/4 ,
-                        y = -(it.pressure?.toFloat()!! - oY) * 100 + 1920f))
-                    if (listPoints.size == repository.getAllPressure()?.size)
-                        _pointsList.value = listPoints
-                }
-            }
         }
     }
 

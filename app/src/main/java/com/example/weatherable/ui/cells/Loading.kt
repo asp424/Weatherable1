@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import com.example.weatherable.ui.anim.TextAnim
 import com.example.weatherable.utilites.isOnline
 
-@RequiresApi(Build.VERSION_CODES.M)
 @Composable
 fun Loading(context: Context) {
     Column(

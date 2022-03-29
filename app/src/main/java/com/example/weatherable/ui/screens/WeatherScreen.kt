@@ -21,7 +21,6 @@ import org.json.JSONObject
 
 
 @OptIn(ExperimentalAnimationApi::class)
-@RequiresApi(Build.VERSION_CODES.M)
 @Composable
 fun WeatherScreen(
     viewModel: MainViewModel
