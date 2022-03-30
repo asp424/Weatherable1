@@ -8,6 +8,11 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import com.example.weatherable.R
 import java.text.SimpleDateFormat
 import java.util.*
@@ -299,9 +304,9 @@ fun getStringWasForChat(wasDate: Long): String {
     val dayOfYearWas = formatDate("D", wasDate)
     val yearNow = dateNow.get(Calendar.YEAR)
     return when (dateNow.get(Calendar.DAY_OF_YEAR) - dayOfYearWas.toInt()) {
-        1 -> timeWas
-        2 -> timeWas
-        0 -> "$timeWas "
+        1 -> " вчера в $timeWas"
+        2 -> " позавчера в $timeWas"
+        0 -> " сегодня в  $timeWas"
         else -> {
             when (yearNow - yearWas.toInt()) {
                 1 -> " $dayOfMonthWas.$monthNumWas.$yearWasSmall в $timeWas"
@@ -313,4 +318,11 @@ fun getStringWasForChat(wasDate: Long): String {
 }
 private fun formatDate(value: String, date: Long): String {
     return SimpleDateFormat(value, Locale.getDefault()).format(date)
+}
+
+inline fun Modifier.noRippleClickable(crossinline onClick: () -> Unit): Modifier = composed {
+    clickable(indication = null,
+        interactionSource = remember { MutableInteractionSource() }) {
+        onClick()
+    }
 }
