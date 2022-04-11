@@ -40,7 +40,7 @@ class WorkManagerBluetooth(
 
     private fun collector() =
         CoroutineScope(Dispatchers.IO).launch {
-            repository.getBluetoothData().collect {
+            repository.getBluetoothData("a").collect {
                 when (it) {
                     is BluetoothResponse.OnSuccess -> {
                         delay(2000L)

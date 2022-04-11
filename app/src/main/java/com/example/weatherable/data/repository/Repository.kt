@@ -23,7 +23,7 @@ constructor(
         emit(jsoupSource.getCityValues())
         }
     @OptIn(InternalCoroutinesApi::class)
-    suspend fun getBluetoothData(): Flow<BluetoothResponse> = bluetoothSource.connect()
+    suspend fun getBluetoothData(source: String = ""): Flow<BluetoothResponse> = bluetoothSource.connect(source)
 
 
     fun getAllTemps(): List<TempModel>? = bluetoothSource.getAllTemps()

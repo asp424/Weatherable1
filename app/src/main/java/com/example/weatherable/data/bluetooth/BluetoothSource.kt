@@ -3,6 +3,7 @@ package com.example.weatherable.data.bluetooth
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothSocket
 import android.os.Build
+import android.util.Log
 import com.example.weatherable.data.room.bluetooth_db.BluetoothDataDao
 import com.example.weatherable.data.room.bluetooth_db.models.PressureModel
 import com.example.weatherable.data.room.bluetooth_db.models.TempModel
@@ -15,6 +16,7 @@ import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import java.util.*
+import java.util.jar.Manifest
 import javax.inject.Inject
 
 class BluetoothSource @Inject constructor(private val bluetoothDataDao: BluetoothDataDao) {
@@ -23,7 +25,7 @@ class BluetoothSource @Inject constructor(private val bluetoothDataDao: Bluetoot
     private val device = btAdapter.getRemoteDevice(DEVICE)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    suspend fun connect(): Flow<BluetoothResponse> = callbackFlow {
+    suspend fun connect(source: String): Flow<BluetoothResponse> = callbackFlow {
         launch(Dispatchers.Default) {
             runCatching {
                 btAdapter?.enable()
@@ -64,11 +66,13 @@ class BluetoothSource @Inject constructor(private val bluetoothDataDao: Bluetoot
                                                     }
                                                     1 -> {
                                                         if (writePres)
-                                                        CoroutineScope(Dispatchers.Default).launch {
+                                                        launch {
+                                                            Log.d("My", this.coroutineContext.toString())
                                                             bluetoothDataDao.insertOrUpdateItemPres(
                                                                 PressureModel(
                                                                     id = Calendar.getInstance().time.time.toString(),
-                                                                    pressure = message.toString()
+                                                                    pressure = message.toString(),
+                                                                    type = source
                                                                 )
                                                             )
                                                             writePres = false
@@ -90,7 +94,7 @@ class BluetoothSource @Inject constructor(private val bluetoothDataDao: Bluetoot
                                     bluetoothSocket?.close()
                                 }.onFailure { e ->
                                     trySend(BluetoothResponse.Error(e.message.toString()))
-                                }.onSuccess { btAdapter?.disable()
+                                }.onSuccess { if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) btAdapter?.disable()
                                 }
                             }
                                 .onFailure { e -> trySend(BluetoothResponse.Error(e.message.toString())) }
@@ -101,7 +105,7 @@ class BluetoothSource @Inject constructor(private val bluetoothDataDao: Bluetoot
         }
         awaitClose {
             runCatching { bluetoothSocket?.close() }.onSuccess {
-                btAdapter?.disable()
+               if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)  btAdapter?.disable()
                 trySendBlocking(BluetoothResponse.Wait)
             }.onFailure { e -> trySendBlocking(BluetoothResponse.Error(e.message.toString())) }
         }

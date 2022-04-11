@@ -121,7 +121,7 @@ class MainViewModel @Inject constructor(
     fun runPeriodicWork() = workManager.enqueueUniquePeriodicWork(
         "per", ExistingPeriodicWorkPolicy.KEEP,
         PeriodicWorkRequestBuilder<WorkManagerBluetooth>(
-            1, TimeUnit.HOURS, 5, TimeUnit.MINUTES
+            15, TimeUnit.MINUTES, 5, TimeUnit.MINUTES
         ).build()
     )
 

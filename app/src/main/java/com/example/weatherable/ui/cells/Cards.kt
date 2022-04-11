@@ -122,7 +122,6 @@ fun RealWeather(viewModel: MainViewModel) {
     var scale1 by remember { mutableStateOf(1f) }
     var enable by remember { mutableStateOf(false) }
     (LocalContext.current as MainActivity).also { cont ->
-        viewModel.stateWork()
         var job: Job? by remember {
             mutableStateOf(null)
         }

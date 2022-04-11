@@ -41,7 +41,8 @@ fun Table(visible: Boolean, viewModel: MainViewModel) {
     val state = rememberTransformableState { zoomChange, _, _ -> scale *= zoomChange }
 
     LaunchedEffect(key1 = pressPoints, block = {
-        stateList.animateScrollToItem(pressPoints.lastIndex)
+        if (pressPoints.isNotEmpty())
+        stateList.scrollToItem(pressPoints.lastIndex)
     })
 
     Visibility(visible = visible) {
@@ -84,7 +85,7 @@ fun Table(visible: Boolean, viewModel: MainViewModel) {
                                     timeVis = true
                                 }) {
                                     (act.dp - (act - prev).dp * 13 - if (i == pressPoints.lastIndex)
-                                        532.dp else 528.dp).also { v ->
+                                        372.dp else 368.dp).also { v ->
                                         Text(
                                             text = "*", modifier = Modifier
                                                 .padding(top = v, end = 10.dp),
@@ -92,13 +93,13 @@ fun Table(visible: Boolean, viewModel: MainViewModel) {
                                             fontWeight = FontWeight.Bold, color = Black
                                         )
                                         Text(
-                                            text = "\n" + item.pressure!!,
+                                            text = "\n" + "${item.pressure!!}\n" + "${item.type}",
                                             modifier = Modifier
                                                 .padding(top = v, end = 10.dp),
                                             fontSize = if (i == pressPoints.lastIndex) 12.sp else 8.sp,
                                             color = Black
                                         )
-                                    }
+                                        }
                                 }
                             }
                         }
