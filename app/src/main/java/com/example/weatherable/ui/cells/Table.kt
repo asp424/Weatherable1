@@ -31,7 +31,7 @@ val c = 0
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun Table(visible: Boolean, viewModel: MainViewModel, k: Int = 4) {
+fun Table(visible: Boolean, viewModel: MainViewModel) {
     val pressPoints by viewModel.presList.collectAsState()
     var scale by remember { mutableStateOf(1f) }
     val stateList = rememberLazyListState()

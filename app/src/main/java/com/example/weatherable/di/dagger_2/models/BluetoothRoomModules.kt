@@ -1,5 +1,6 @@
 package com.example.weatherable.di.dagger_2.models
 
+import android.app.Application
 import androidx.room.Room
 import com.example.weatherable.application.App
 import com.example.weatherable.data.bluetooth.BluetoothSource
@@ -13,7 +14,7 @@ import javax.inject.Singleton
 class DatabaseModule {
     @Provides
     @Singleton
-    fun providesBluetoothDatabase(app: App): Database {
+    fun providesBluetoothDatabase(app: Application): Database {
         return Room.databaseBuilder(app, Database::class.java, "ass").build()
     }
 }

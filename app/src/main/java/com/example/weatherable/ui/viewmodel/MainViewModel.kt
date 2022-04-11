@@ -1,23 +1,36 @@
 package com.example.weatherable.ui.viewmodel
 
-import android.os.Build
+import android.annotation.SuppressLint
+import android.app.job.JobInfo
+import android.app.job.JobInfo.NETWORK_TYPE_ANY
+import android.app.job.JobScheduler
+import android.content.ComponentName
+import android.content.Context
+import android.content.Context.JOB_SCHEDULER_SERVICE
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.*
+import androidx.work.*
+import com.example.weatherable.activity.MainActivity
 import com.example.weatherable.data.repository.Repository
 import com.example.weatherable.data.room.bluetooth_db.models.PressureModel
 import com.example.weatherable.data.view_states.BluetoothResponse
 import com.example.weatherable.data.view_states.InternetResponse
+import com.example.weatherable.work.MyJobScheduler
+import com.example.weatherable.work.WorkManagerBluetooth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class MainViewModel @Inject constructor(private val repository: Repository) :
+class MainViewModel @Inject constructor(
+    private val repository: Repository,
+    private val workManager: WorkManager
+) :
     ViewModel(),
     LifecycleObserver {
     private val _internetValues: MutableStateFlow<InternetResponse?> =
@@ -68,7 +81,7 @@ class MainViewModel @Inject constructor(private val repository: Repository) :
         blueJob?.cancel()
     }
 
-    fun getTempsForTable(){
+    fun getTempsForTable() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.getAllTemps()?.forEach {
 
@@ -76,17 +89,51 @@ class MainViewModel @Inject constructor(private val repository: Repository) :
         }
     }
 
-    fun getPresForTable(){
+    fun getPresForTable() {
         viewModelScope.launch(Dispatchers.IO) {
-            if (repository.getAllPressure()!!.isNotEmpty())
+            if (repository.getAllPressure().isNotEmpty())
                 _presList.value = repository.getAllPressure()
         }
     }
 
-    fun clearTablesValues(){
+    fun clearTablesValues() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.clearPressureList()
             repository.clearTempsList()
         }
     }
+
+    fun checkService(mainActivity: MainActivity) =
+        (mainActivity.applicationContext.getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler).allPendingJobs.size == 0
+
+
+    fun scheduleJob(mainActivity: MainActivity) =
+        (mainActivity.applicationContext.getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler).apply {
+            if (allPendingJobs.size == 0)
+                schedule(
+                    JobInfo.Builder(123, ComponentName(mainActivity, MyJobScheduler::class.java))
+                        .setRequiresCharging(false).setRequiredNetworkType(NETWORK_TYPE_ANY)
+                        .setPersisted(true).setPeriodic(60 * 60 * 1000L).build()
+                )
+            else cancelAll()
+        }
+
+    fun runPeriodicWork() = workManager.enqueueUniquePeriodicWork(
+        "per", ExistingPeriodicWorkPolicy.KEEP,
+        PeriodicWorkRequestBuilder<WorkManagerBluetooth>(
+            1, TimeUnit.HOURS, 5, TimeUnit.MINUTES
+        ).build()
+    )
+
+    fun runOneTimeWork() = workManager.enqueueUniqueWork(
+        "one",
+        ExistingWorkPolicy.KEEP,
+        OneTimeWorkRequestBuilder<WorkManagerBluetooth>()
+            .build()
+    )
+
+    fun stateWork() = Log.d("My", workManager.getWorkInfosByTag("a").toString())
+
+    fun stopWork() = workManager.cancelAllWork()
+
 }

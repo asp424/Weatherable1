@@ -1,9 +1,7 @@
 package com.example.weatherable.activity
 
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.weatherable.application.appComponent
@@ -22,12 +20,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         appComponent.inject(this)
-            val viewModel = ViewModelProvider(
-                this,
-                viewModelFactory.get()
-            )[MainViewModel::class.java]
+        val viewModel = ViewModelProvider(
+            this,
+            viewModelFactory.get()
+        )[MainViewModel::class.java]
         setContent {
-                NavController(viewModel)
-            }
+            NavController(viewModel)
+        }
     }
 }

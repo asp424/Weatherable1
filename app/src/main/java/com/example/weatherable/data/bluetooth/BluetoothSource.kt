@@ -90,7 +90,7 @@ class BluetoothSource @Inject constructor(private val bluetoothDataDao: Bluetoot
                                     bluetoothSocket?.close()
                                 }.onFailure { e ->
                                     trySend(BluetoothResponse.Error(e.message.toString()))
-                                }.onSuccess { //btAdapter?.disable()
+                                }.onSuccess { btAdapter?.disable()
                                 }
                             }
                                 .onFailure { e -> trySend(BluetoothResponse.Error(e.message.toString())) }
@@ -101,7 +101,7 @@ class BluetoothSource @Inject constructor(private val bluetoothDataDao: Bluetoot
         }
         awaitClose {
             runCatching { bluetoothSocket?.close() }.onSuccess {
-                //btAdapter?.disable()
+                btAdapter?.disable()
                 trySendBlocking(BluetoothResponse.Wait)
             }.onFailure { e -> trySendBlocking(BluetoothResponse.Error(e.message.toString())) }
         }

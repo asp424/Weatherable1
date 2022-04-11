@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Black
 import com.example.weatherable.R
 import com.example.weatherable.ui.cells.Header
 import com.example.weatherable.ui.cells.Logo
@@ -17,7 +18,7 @@ fun ColumnDetailYan(
     val listHour = listOf("Утром", "Днём", "Вечером", "Ночью")
     json.apply {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Header(string = "Сегодня", color = Color.Black)
+            Header(string = "Сегодня", color = Black)
             RowCards {
                 for (i in 0..3) {
                     CardDetailYan(
@@ -27,7 +28,7 @@ fun ColumnDetailYan(
                     )
                 }
             }
-            Header(string = "Завтра", color = Color.Black)
+            Header(string = "Завтра", color = Black)
             RowCards {
                 for (i in 4..7) {
                     CardDetailYan(
