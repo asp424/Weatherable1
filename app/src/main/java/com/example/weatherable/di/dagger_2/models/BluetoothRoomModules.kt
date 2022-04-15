@@ -2,7 +2,6 @@ package com.example.weatherable.di.dagger_2.models
 
 import android.app.Application
 import androidx.room.Room
-import com.example.weatherable.application.App
 import com.example.weatherable.data.bluetooth.BluetoothSource
 import com.example.weatherable.data.room.bluetooth_db.BluetoothDataDao
 import com.example.weatherable.data.room.database.Database
@@ -31,9 +30,9 @@ class BluetoothSourceModule{
     @Provides
     @Singleton
     fun providesBluetoothSource(
-        bluetoothDataDao: BluetoothDataDao
+        bluetoothDataDao: BluetoothDataDao, app: Application
     ): BluetoothSource {
-        return BluetoothSource(bluetoothDataDao)
+        return BluetoothSource(app, bluetoothDataDao)
     }
 }
 

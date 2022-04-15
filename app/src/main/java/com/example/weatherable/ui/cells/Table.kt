@@ -40,11 +40,6 @@ fun Table(visible: Boolean, viewModel: MainViewModel) {
     val textPress = listOf(780, 770, 760, 750, 740)
     val state = rememberTransformableState { zoomChange, _, _ -> scale *= zoomChange }
 
-    LaunchedEffect(key1 = pressPoints, block = {
-        if (pressPoints.isNotEmpty())
-        stateList.scrollToItem(pressPoints.lastIndex)
-    })
-
     Visibility(visible = visible) {
         Card(
             modifier = Modifier
@@ -78,29 +73,39 @@ fun Table(visible: Boolean, viewModel: MainViewModel) {
             LazyRow(
                 content = {
                     itemsIndexed(pressPoints) { i, item ->
-                        (pressPoints[0].pressure!!.toFloat()).also { prev ->
-                            item.pressure!!.toFloat().also { act ->
-                                Box(modifier = Modifier.noRippleClickable {
-                                    time = item.id
-                                    timeVis = true
-                                }) {
-                                    (act.dp - (act - prev).dp * 13 - if (i == pressPoints.lastIndex)
-                                        372.dp else 368.dp).also { v ->
-                                        Text(
-                                            text = "*", modifier = Modifier
-                                                .padding(top = v, end = 10.dp),
-                                            fontSize = if (i == pressPoints.lastIndex) 16.sp else 12.sp,
-                                            fontWeight = FontWeight.Bold, color = Black
-                                        )
-                                        Text(
-                                            text = "\n" + "${item.pressure!!}\n" + "${item.type}",
-                                            modifier = Modifier
-                                                .padding(top = v, end = 10.dp),
-                                            fontSize = if (i == pressPoints.lastIndex) 12.sp else 8.sp,
-                                            color = Black
-                                        )
+                        (pressPoints[0].pressure.toFloat()).also { prev ->
+                            item.pressure.toFloat().also { act ->
+                                if (act.toString().startsWith("7"))
+                                    Box(modifier = Modifier.noRippleClickable {
+                                        time = item.id
+                                        timeVis = true
+                                    }) {
+                                        (act.dp - (act - prev).dp * 13 - if (i == pressPoints.lastIndex)
+                                            478.dp else 476.dp).also { v ->
+                                            Text(
+                                                text = "*", modifier = Modifier
+                                                    .padding(top = v, end = 10.dp),
+                                                fontSize = if (i == pressPoints.lastIndex) 16.sp else 12.sp,
+                                                fontWeight = FontWeight.Bold, color = Black
+                                            )
+                                            Text(
+                                                text = "\n" + "${item.pressure}\n" + item.type,
+                                                modifier = Modifier
+                                                    .padding(top = v, end = 10.dp),
+                                                fontSize = if (i == pressPoints.lastIndex) 12.sp else 8.sp,
+                                                color = Black
+                                            )
+
+                                            /*Text(
+                                                text = "a",
+                                                modifier = Modifier
+                                                    .padding(top = (770.dp - (770 - prev).dp * 13 - if (i == pressPoints.lastIndex)
+                                                        478.dp else 476.dp), end = 10.dp),
+                                                fontSize = if (i == pressPoints.lastIndex) 12.sp else 8.sp,
+                                                color = Black
+                                            )*/
                                         }
-                                }
+                                    }
                             }
                         }
                     }
@@ -117,6 +122,10 @@ fun Table(visible: Boolean, viewModel: MainViewModel) {
             }
         }
     }
+    LaunchedEffect(key1 = pressPoints, block = {
+        if (pressPoints.isNotEmpty() && visible)
+            stateList.scrollToItem(pressPoints.lastIndex)
+    })
 }
 
 

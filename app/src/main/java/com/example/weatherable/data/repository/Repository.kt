@@ -21,10 +21,11 @@ constructor(
 ) {
     suspend fun getJsoupData(): Flow<InternetResponse> = flow {
         emit(jsoupSource.getCityValues())
-        }
-    @OptIn(InternalCoroutinesApi::class)
-    suspend fun getBluetoothData(source: String = ""): Flow<BluetoothResponse> = bluetoothSource.connect(source)
+    }
 
+    @OptIn(InternalCoroutinesApi::class)
+    suspend fun getBluetoothData(source: String = ""): Flow<BluetoothResponse> =
+        bluetoothSource.runBluetooth(source)
 
     fun getAllTemps(): List<TempModel>? = bluetoothSource.getAllTemps()
     fun getAllPressure(): List<PressureModel> = bluetoothSource.getAllPressure()
@@ -34,6 +35,7 @@ constructor(
     suspend fun getGisData(context: Context): Flow<InternetResponse> = flow {
         emit(jsoupSource.getGisData(context))
     }
+
     suspend fun getYanData(context: Context): Flow<InternetResponse> = flow {
         emit(jsoupSource.getYanData(context))
     }

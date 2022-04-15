@@ -128,8 +128,7 @@ class MainViewModel @Inject constructor(
     fun runOneTimeWork() = workManager.enqueueUniqueWork(
         "one",
         ExistingWorkPolicy.KEEP,
-        OneTimeWorkRequestBuilder<WorkManagerBluetooth>()
-            .build()
+        OneTimeWorkRequestBuilder<WorkManagerBluetooth>().build()
     )
 
     fun stateWork() = Log.d("My", workManager.getWorkInfosByTag("a").toString())
