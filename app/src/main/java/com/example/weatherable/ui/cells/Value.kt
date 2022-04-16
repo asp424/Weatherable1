@@ -19,10 +19,10 @@ fun Value(
 ) {
     Text(
         text = string!!.repPlus,
-        fontSize = 12.sp,
+        fontSize = 13.sp,
         fontWeight = fontWeight,
         modifier = Modifier
-            .padding(2.dp)
+            .padding(3.dp)
             .padding(end = 4.dp, start = 6.dp),
 
         style = TextStyle(color = color), textAlign = TextAlign.Center

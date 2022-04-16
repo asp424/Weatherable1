@@ -29,7 +29,7 @@ import javax.inject.Inject
 @OptIn(ExperimentalCoroutinesApi::class)
 class BluetoothSource @Inject constructor(
     private val context: Application,
-    private val bluetoothDataDao: BluetoothDataDao
+    private val bD: BluetoothDataDao
 ) {
     private var socket: BluetoothSocket? = null
     private val device by lazy { adapter.getRemoteDevice(DEVICE) }
@@ -40,28 +40,17 @@ class BluetoothSource @Inject constructor(
     }
 
     suspend fun runBluetooth(source: String) = callbackFlow {
-        launch(Default) {
-            task({ if (checkSelfPermission()) adapter.enable() }, {
-                task({ socket?.close() },
-                    {
-                        task({ delay(1000L); socket = create },
-                            { task({ work(source) { trySend(it) } }, {}, 1) })
-                    })
-            })
-        }
-        awaitClose { stop }
-    }.flowOn(IO)
+        launch(Default) { task({ enable }, { task({ close }, { task({ delay(1500L) ; create },
+                            { task({ work(source) { trySend(it) } }, {}, 1) }) }) }) }
+        awaitClose { stop } }.flowOn(IO)
 
-    private inline fun ProducerScope<BluetoothResponse>.task(
-        run: () -> Unit, suc: () -> Unit, type: Int = 0
-    ) =
-        runCatching { run() }.onSuccess { suc() }
-            .onFailure { if (type == 1) stop; trySend(it.error) }
+    private inline fun PS.task(run: () -> Unit, suc: () -> Unit, type: Int = 0) =
+        runCatching { run() }.onSuccess { suc() }.onFailure { if (type == 1) stop
+        trySend(it.error) }
 
-    private inline fun ProducerScope<BluetoothResponse>.work(
-        source: String, crossinline onSend: (BluetoothResponse) -> Unit) {
+    private inline fun PS.work(source: String, crossinline onSend: (BR) -> Unit) {
         var counter = 0; var writeTemp = true; var writePres = true
-        if (checkSelfPermission()) socket?.connect(); success
+        connect; success
             socket!!.inputStream.bufferedReader().use {
                 while (isActive) {
                     it.readLine().apply {
@@ -82,41 +71,42 @@ class BluetoothSource @Inject constructor(
     private fun onCycle(write: Boolean, onWrite: () -> Unit, onSend: () -> Unit)
     { if (write) { onWrite() }; onSend() }
 
-    private val ProducerScope<BluetoothResponse>.stop
-        get() = runCatching { socket?.close() }.onSuccess {
-            if (checkDisable && checkSelfPermission()) adapter.disable(); wait
+    private val PS.stop get() = runCatching { close }.onSuccess {
+            if (26.checkDisable && checkSelfPermission()) adapter.disable(); wait
         }
 
-    private fun checkSelfPermission() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        ActivityCompat.checkSelfPermission(context, BLUETOOTH_CONNECT) != 0
-    } else true
+    private fun checkSelfPermission() = if (Build.VERSION.SDK_INT >= 31) { ActivityCompat
+        .checkSelfPermission(context, BLUETOOTH_CONNECT) != 0 } else true
 
-    private fun writePress(message: String, source: String) = bluetoothDataDao
-        .insertOrUpdateItemPres(
-            PressureModel(
-                Calendar.getInstance().time.time.toString(),
-                message, source
-            )
+    private fun writePress(message: String, source: String) = bD.insertOrUpdateItemPres(
+            PressureModel(Calendar.getInstance().time.time.toString(), message, source)
         )
 
-    private fun writeTemp(message: String) = bluetoothDataDao.insertOrUpdateItemTemp(
+    private fun writeTemp(message: String) = bD.insertOrUpdateItemTemp(
         TempModel(Calendar.getInstance().time.time.toString(), message)
     )
 
-    private val create
-        get() = if (checkSelfPermission())
-            device.createRfcommSocketToServiceRecord(UUID.fromString(UUID_VAL)) else null
+    private val create get() = if (checkSelfPermission())
+            socket = device.createRfcommSocketToServiceRecord(UUID.fromString(UUID_VAL)) else null
 
     private val String.check get() = isNotEmpty() && this != "nAn"
-    private val checkDisable get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
-    private val ProducerScope<BluetoothResponse>.success get() = trySend(BluetoothResponse.OnSuccess)
-    private val ProducerScope<BluetoothResponse>.wait get() = trySend(BluetoothResponse.Wait)
+    private val Int.checkDisable get() = Build.VERSION.SDK_INT >= this
+    private val PS.success get() = trySend(BluetoothResponse.OnSuccess)
+    private val PS.wait get() = trySend(BluetoothResponse.Wait)
     private val String.press get() = BluetoothResponse.Press(this)
     private val String.temp get() = BluetoothResponse.Temp(this)
     private val Throwable.error get() = BluetoothResponse.Error(message.toString())
-    fun getAllTemps(): List<TempModel>? = bluetoothDataDao.getAllItemsTemp()
-    fun getAllPressure(): List<PressureModel> = bluetoothDataDao.getAllItemsPres()
-    fun clearPressureList() = bluetoothDataDao.deleteAllPres()
-    fun clearTempList() = bluetoothDataDao.deleteAllTemp()
+    private val close get() = run { socket?.close() }
+    private val connect get() = run { if (checkSelfPermission()) socket?.connect() }
+    private val enable get() = run{ if (checkSelfPermission()) adapter.enable() }
+    private val delay get() = suspend { run { delay(1000L) } }
+    fun getAllTemps() = bD.getAllItemsTemp()
+    fun getAllPressure() = bD.getAllItemsPres()
+    fun clearPressureList() = bD.deleteAllPres()
+    fun clearTempList() = bD.deleteAllTemp()
 }
+
+@OptIn(ExperimentalCoroutinesApi::class)
+typealias PS = ProducerScope<BluetoothResponse>
+typealias BR = BluetoothResponse
 

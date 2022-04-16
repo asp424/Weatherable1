@@ -1,22 +1,26 @@
 package com.example.weatherable.ui.screens
 
-import android.os.Build
-import androidx.annotation.RequiresApi
+import android.util.Log
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Card
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.contentColorFor
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color.Companion.Blue
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
-import com.example.weatherable.activity.MainActivity
 import com.example.weatherable.data.view_states.InternetResponse
 import com.example.weatherable.ui.cells.*
 import com.example.weatherable.ui.viewmodel.MainViewModel
-import com.example.weatherable.utilites.isOnline
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import org.json.JSONObject
 
 
@@ -25,87 +29,75 @@ import org.json.JSONObject
 fun WeatherScreen(
     viewModel: MainViewModel
 ) {
-    var visible by remember {
-        mutableStateOf(false)
-    }
-    val context = LocalContext.current as MainActivity
     BackgroundImage()
-    val values by remember(viewModel) {
-        viewModel.internetValues
-    }.collectAsState()
+    val values by remember(viewModel) { viewModel.internetValues }.collectAsState()
+    val refreshing by viewModel.internetValuesRefr.collectAsState()
+    LaunchedEffect(refreshing) {
+        if (refreshing) viewModel.getInternetValues()
+    }
     when (values) {
         is InternetResponse.OnSuccess -> {
             (values as InternetResponse.OnSuccess).dataValues.apply {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Top,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = 20.dp)
-                ) {
-                    Visibility(visible = visible) {
-                        Card(backgroundColor = Color.Yellow) {
-                            Header(
-                                string = "Отсутствует интернет",
-                                color = Color.Red,
-                                paddingTop = 8.dp, paddingStart = 8.dp,
-                                paddingBottom = 8.dp, paddingEnd = 8.dp
+                    SwipeRefresh(
+                        state = rememberSwipeRefreshState(isRefreshing = refreshing),
+                        onRefresh = { viewModel.getInternetValues() },
+                        indicator = { state, trigger ->
+                            SwipeRefreshIndicator(
+                                fade = true,
+                                state = state,
+                                refreshTriggerDistance = trigger,
+                                scale = true,
+                                backgroundColor = Blue,
+                                contentColor = White,
+                                shape = MaterialTheme.shapes.small,
                             )
                         }
-                    }
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 65.dp, top = 10.dp),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        MyCity(
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Top,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(top = 20.dp)
+                            .verticalScroll(rememberScrollState())
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 65.dp, top = 10.dp),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            MyCity(
+                                JSONObject()
+                                    .put("yan_temp", getString("yan_temp"))
+                                    .put("hydro_temp", getString("hydro_temp"))
+                                    .put("gis_temp", getString("gis_temp"))
+                                    .put("krm_wind", getString("krm_wind"))
+                            )
+                            Chelyabinsk(getString("chel_temp"))
+                        }
+                        SeaCites(
                             JSONObject()
-                                .put("yan_temp", getString("yan_temp"))
-                                .put("hydro_temp", getString("hydro_temp"))
-                                .put("gis_temp", getString("gis_temp"))
-                                .put("krm_wind", getString("krm_wind"))
+                                .put("nov_value", getJSONObject("nov_value"))
+                                .put("ana_value", getJSONObject("ana_value"))
+                                .put("gel_value", getJSONObject("gel_value"))
                         )
-                        Chelyabinsk(getString("chel_temp"))
                     }
-                    SeaCites(
-                        JSONObject()
-                            .put("nov_value", getJSONObject("nov_value"))
-                            .put("ana_value", getJSONObject("ana_value"))
-                            .put("gel_value", getJSONObject("gel_value"))
-                    )
                 }
-                RealWeather(viewModel)
             }
         }
         is InternetResponse.Loading -> {
             Column(
-                Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxSize()
             ) {
-                if (isOnline(context)) {
-                    Card(backgroundColor = Color.Black) {
-                        Header(
-                            string = "Загрузка...",
-                            paddingTop = 8.dp, paddingStart = 8.dp,
-                            paddingBottom = 8.dp, paddingEnd = 8.dp
-                        )
-                    }
-                } else {
-                    visible = true
-                    Card(backgroundColor = Color.Yellow) {
-                        Header(
-                            string = "Отсутствует интернет",
-                            color = Color.Red,
-                            paddingTop = 8.dp, paddingStart = 8.dp,
-                            paddingBottom = 8.dp, paddingEnd = 8.dp
-                        )
-                    }
-                }
-
+                CircularProgressIndicator(color = White)
             }
             LocalLifecycleOwner.current.lifecycle.addObserver(viewModel)
         }
     }
+    RealWeather(viewModel)
 }

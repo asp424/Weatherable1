@@ -6,8 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.remember
@@ -51,13 +49,17 @@ fun getPendingSelfIntent(
 }
 
 val String.sA: String
-    get() = this.substringAfter("data-text=\"")
+    get() = substringAfter("data-text=\"")
 val String.sB: String
-    get() = this.substringBefore("\">")
+    get() = substringBefore("\">")
 val String.rep: Int
-    get() = if (this.isNotEmpty()) this.filter { it.isDigit() }.toInt() else 0
+    get() = if (isNotEmpty()) filter { it.isDigit() }.toInt() else 0
+
+val String.repD
+    get() = if (isNotEmpty()) substringBefore(".").filter { it.isDigit() } +
+            "." + substringAfter(".").filter { it.isDigit() } else ""
 val String.repPlus: String
-    get() = this.replace(",", ".").replace("+", "")
+    get() = replace(",", ".").replace("+", "")
 
 fun MutableList<String>.addItem(value: String) = run {
     this.apply {
@@ -288,11 +290,13 @@ fun checkedCityUrlYanDet(context: Context) = when (getCity(context)) {
     "Крымск" -> YAN_URL_KRYM_DETAILS
     else -> YAN_URL_KRYM_DETAILS
 }
+
 fun String.asTime(): String {
     val time = Date(this.toLong())
     val timeFormat = SimpleDateFormat("H:mm", Locale.getDefault())
     return timeFormat.format(time)
 }
+
 fun getStringWasForChat(wasDate: Long): String {
     val timeWas = wasDate.toString().asTime()
     val dateNow = Calendar.getInstance(Locale.getDefault())
@@ -316,6 +320,7 @@ fun getStringWasForChat(wasDate: Long): String {
         }
     }
 }
+
 private fun formatDate(value: String, date: Long): String {
     return SimpleDateFormat(value, Locale.getDefault()).format(date)
 }

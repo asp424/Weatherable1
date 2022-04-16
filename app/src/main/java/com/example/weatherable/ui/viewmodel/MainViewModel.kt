@@ -36,6 +36,9 @@ class MainViewModel @Inject constructor(
     private val _internetValues: MutableStateFlow<InternetResponse?> =
         MutableStateFlow(InternetResponse.Loading)
     val internetValues = _internetValues.asStateFlow()
+    private val _internetValuesRefr: MutableStateFlow<Boolean> =
+        MutableStateFlow(false)
+    val internetValuesRefr = _internetValuesRefr.asStateFlow()
     private val _bluetoothValues: MutableStateFlow<BluetoothResponse?> =
         MutableStateFlow(BluetoothResponse.Start)
     val bluetoothValues = _bluetoothValues.asStateFlow()
@@ -50,11 +53,18 @@ class MainViewModel @Inject constructor(
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun getJsoupData() {
         _bluetoothValues.value = BluetoothResponse.Start
+        getInternetValues()
+    }
+
+    fun getInternetValues() {
+        _internetValuesRefr.value = true
         intJob?.cancel()
         intJob = viewModelScope.launch {
-            repository.getJsoupData().collect { _internetValues.value = it }
+            repository.getJsoupData().collect {
+                _internetValues.value = it
+                _internetValuesRefr.value = false
+            }
         }
-        intJob?.start()
     }
 
     private var blueJob: Job? = null
