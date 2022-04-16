@@ -16,27 +16,19 @@ import javax.inject.Inject
 class Repository @Inject
 constructor(
     private val bluetoothSource: BluetoothSource,
-    private val jsoupSource: JsoupSource,
-    private val restSource: RestSource
+    private val jsoupSource: JsoupSource
 ) {
-    suspend fun getJsoupData(): Flow<InternetResponse> = flow {
-        emit(jsoupSource.getCityValues())
-    }
+    suspend fun getJsoupData() = flow { emit(jsoupSource.getCityValues()) }
 
     @OptIn(InternalCoroutinesApi::class)
-    suspend fun getBluetoothData(source: String = ""): Flow<BluetoothResponse> =
-        bluetoothSource.runBluetooth(source)
+    suspend fun getBluetoothData(source: String = "") = bluetoothSource.runBluetooth(source)
 
-    fun getAllTemps(): List<TempModel>? = bluetoothSource.getAllTemps()
-    fun getAllPressure(): List<PressureModel> = bluetoothSource.getAllPressure()
+    fun getAllTemps() = bluetoothSource.getAllTemps()
+    fun getAllPressure() = bluetoothSource.getAllPressure()
     fun clearPressureList() = bluetoothSource.clearPressureList()
     fun clearTempsList() = bluetoothSource.clearTempList()
 
-    suspend fun getGisData(context: Context): Flow<InternetResponse> = flow {
-        emit(jsoupSource.getGisData(context))
-    }
+    suspend fun getGisData(context: Context) = flow { emit(jsoupSource.getGisData(context)) }
 
-    suspend fun getYanData(context: Context): Flow<InternetResponse> = flow {
-        emit(jsoupSource.getYanData(context))
-    }
+    suspend fun getYanData(context: Context) = flow { emit(jsoupSource.getYanData(context)) }
 }

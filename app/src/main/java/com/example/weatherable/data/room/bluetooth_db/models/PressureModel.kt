@@ -10,6 +10,5 @@ class PressureModel(
     @PrimaryKey
     var id: String = "",
     var pressure: String = "",
-    var type: String = "",
-    //var temp: String = "",
+    var type: String = ""
     )

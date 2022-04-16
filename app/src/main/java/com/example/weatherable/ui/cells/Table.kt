@@ -1,6 +1,7 @@
 package com.example.weatherable.ui.cells
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.gestures.rememberTransformableState
@@ -33,6 +34,7 @@ val c = 0
 @Composable
 fun Table(visible: Boolean, viewModel: MainViewModel) {
     val pressPoints by viewModel.presList.collectAsState()
+    val tempPoints by viewModel.tempList.collectAsState()
     var scale by remember { mutableStateOf(1f) }
     val stateList = rememberLazyListState()
     var timeVis by remember { mutableStateOf(false) }
@@ -69,7 +71,7 @@ fun Table(visible: Boolean, viewModel: MainViewModel) {
                     }
                 }
             }
-
+            Log.d("My", pressPoints.toString())
             LazyRow(
                 content = {
                     itemsIndexed(pressPoints) { i, item ->
@@ -81,7 +83,7 @@ fun Table(visible: Boolean, viewModel: MainViewModel) {
                                         timeVis = true
                                     }) {
                                         (act.dp - (act - prev).dp * 13 - if (i == pressPoints.lastIndex)
-                                            478.dp else 476.dp).also { v ->
+                                            543.dp else 541.dp).also { v ->
                                             Text(
                                                 text = "*", modifier = Modifier
                                                     .padding(top = v, end = 10.dp),
@@ -89,7 +91,7 @@ fun Table(visible: Boolean, viewModel: MainViewModel) {
                                                 fontWeight = FontWeight.Bold, color = Black
                                             )
                                             Text(
-                                                text = "\n" + "${item.pressure}\n" + item.type,
+                                                text = "\n" + "${item.pressure}\n" + "(" + tempPoints[i].temp + ")" + "\n" + item.type,
                                                 modifier = Modifier
                                                     .padding(top = v, end = 10.dp),
                                                 fontSize = if (i == pressPoints.lastIndex) 12.sp else 8.sp,
@@ -99,13 +101,15 @@ fun Table(visible: Boolean, viewModel: MainViewModel) {
                                             /*Text(
                                                 text = "a",
                                                 modifier = Modifier
-                                                    .padding(top = (770.dp - (770 - prev).dp * 13 - if (i == pressPoints.lastIndex)
-                                                        478.dp else 476.dp), end = 10.dp),
+                                                    .padding(
+                                                        top = (770.dp - (770 - prev).dp * 13 - if (i == pressPoints.lastIndex)
+                                                            543.dp else 541.dp), end = 10.dp
+                                                    ),
                                                 fontSize = if (i == pressPoints.lastIndex) 12.sp else 8.sp,
                                                 color = Black
                                             )*/
                                         }
-                                    }
+                                    }  // 478 476 or  543  541
                             }
                         }
                     }

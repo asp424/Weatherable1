@@ -14,10 +14,9 @@ import javax.inject.Singleton
         @Singleton
         fun repository(
             bluetoothDataSource: BluetoothSource,
-            jsoupDatasource: JsoupSource,
-            restSource: RestSource
+            jsoupDatasource: JsoupSource
             ): Repository {
-            return Repository(bluetoothDataSource, jsoupDatasource, restSource)
+            return Repository(bluetoothDataSource, jsoupDatasource)
         }
     }
 

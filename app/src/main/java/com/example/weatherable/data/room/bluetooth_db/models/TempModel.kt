@@ -10,5 +10,5 @@ class TempModel(
     @NonNull
     @PrimaryKey
     var id: String = "",
-    var temp: String? = "",
+    var temp: String = "",
     )

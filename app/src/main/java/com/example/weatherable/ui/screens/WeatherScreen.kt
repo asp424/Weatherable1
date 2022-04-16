@@ -1,13 +1,12 @@
 package com.example.weatherable.ui.screens
 
-import android.util.Log
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.contentColorFor
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,6 +14,7 @@ import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.weatherable.data.view_states.InternetResponse
 import com.example.weatherable.ui.cells.*
 import com.example.weatherable.ui.viewmodel.MainViewModel
@@ -32,27 +32,31 @@ fun WeatherScreen(
     BackgroundImage()
     val values by remember(viewModel) { viewModel.internetValues }.collectAsState()
     val refreshing by viewModel.internetValuesRefr.collectAsState()
+    var t by remember { mutableStateOf(0) }
+
     LaunchedEffect(refreshing) {
         if (refreshing) viewModel.getInternetValues()
+        else t++
     }
+    Text(text = t.toString(), fontSize = 10.sp)
     when (values) {
         is InternetResponse.OnSuccess -> {
             (values as InternetResponse.OnSuccess).dataValues.apply {
-                    SwipeRefresh(
-                        state = rememberSwipeRefreshState(isRefreshing = refreshing),
-                        onRefresh = { viewModel.getInternetValues() },
-                        indicator = { state, trigger ->
-                            SwipeRefreshIndicator(
-                                fade = true,
-                                state = state,
-                                refreshTriggerDistance = trigger,
-                                scale = true,
-                                backgroundColor = Blue,
-                                contentColor = White,
-                                shape = MaterialTheme.shapes.small,
-                            )
-                        }
-                    ) {
+                SwipeRefresh(
+                    state = rememberSwipeRefreshState(isRefreshing = refreshing),
+                    onRefresh = { viewModel.getInternetValues() },
+                    indicator = { state, trigger ->
+                        SwipeRefreshIndicator(
+                            fade = true,
+                            state = state,
+                            refreshTriggerDistance = trigger,
+                            scale = true,
+                            backgroundColor = Blue,
+                            contentColor = White,
+                            shape = MaterialTheme.shapes.small,
+                        )
+                    }
+                ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Top,
