@@ -1,6 +1,8 @@
 package com.example.weatherable.ui.cells
 
+import android.annotation.SuppressLint
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -31,6 +33,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun RealWeather(viewModel: MainViewModel) {
@@ -278,5 +281,10 @@ fun RealWeather(viewModel: MainViewModel) {
 
         }
         Table(visible = visibleCard, viewModel = viewModel)
+    }
+    (LocalContext.current as MainActivity).apply {
+        BackHandler {
+            if (visibleCard) visibleCard = false else finish()
+        }
     }
 }

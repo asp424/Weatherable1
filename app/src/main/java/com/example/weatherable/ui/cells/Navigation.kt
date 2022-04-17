@@ -1,5 +1,6 @@
 package com.example.weatherable.ui.cells
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -15,6 +16,7 @@ import com.example.weatherable.ui.screens.Settings
 import com.example.weatherable.ui.screens.WeatherScreen
 import com.example.weatherable.ui.viewmodel.MainViewModel
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun NavController(viewModel: MainViewModel) {
     Surface(color = Color.Green, modifier = Modifier.fillMaxSize()) {
@@ -54,7 +56,6 @@ fun NavController(viewModel: MainViewModel) {
                     Settings()
                 }
             }
-
         }
     }
 }
