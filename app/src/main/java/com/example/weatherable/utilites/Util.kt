@@ -10,9 +10,11 @@ import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import com.example.weatherable.R
+import com.example.weatherable.data.room.bluetooth_db.models.PressureModel
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -334,3 +336,7 @@ inline fun Modifier.noRippleClickable(crossinline onClick: () -> Unit): Modifier
 }
 
 val <T> T.log get() = Log.d("My", toString())
+
+typealias LP = List<PressureModel>
+
+typealias SP = SnapshotStateList<Int>
