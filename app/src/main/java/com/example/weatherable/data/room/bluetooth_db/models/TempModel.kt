@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 
 @Entity(tableName = "temp_table")
-class TempModel(
+data class TempModel(
     @NonNull
     @PrimaryKey
     var id: String = "",

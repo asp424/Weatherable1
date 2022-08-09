@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/StudioProjects/Weatherable1/app/src/main/res/drawable/gis_e_n.xml" value="0.2115" />
         <entry key="..\:/Users/79822/AndroidStudioProjects/Weatherable/app/src/main/res/drawable/app_widget_background.xml" value="0.1005" />
         <entry key="..\:/Users/79822/AndroidStudioProjects/Weatherable/app/src/main/res/drawable/gis_a.xml" value="0.114" />
         <entry key="..\:/Users/79822/AndroidStudioProjects/Weatherable/app/src/main/res/drawable/gis_a_n.xml" value="0.114" />
@@ -32,7 +33,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_18_PREVIEW" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

@@ -17,22 +17,23 @@ class DatabaseModule {
         return Room.databaseBuilder(app, Database::class.java, "ass").build()
     }
 }
+
 @Module
 class BluetoothDaoModule {
     @Provides
     @Singleton
-    fun providesBluetoothDataDao(db: Database): BluetoothDataDao {
-        return db.bluetoothDao()
-    }
+    fun providesPressureDao(db: Database) = db.bluetoothDao()
 }
+
+
 @Module
-class BluetoothSourceModule{
+class BluetoothSourceModule {
     @Provides
     @Singleton
     fun providesBluetoothSource(
-        bluetoothDataDao: BluetoothDataDao, app: Application
+        dao: BluetoothDataDao, app: Application
     ): BluetoothSource {
-        return BluetoothSource(app, bluetoothDataDao)
+        return BluetoothSource(app, dao)
     }
 }
 

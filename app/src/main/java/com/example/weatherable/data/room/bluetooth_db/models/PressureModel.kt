@@ -5,10 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "pressure_table")
-class PressureModel(
+data class PressureModel(
     @NonNull
     @PrimaryKey
-    var id: String = "",
-    var pressure: String = "",
-    var type: String = ""
-    )
+    var id: String = "", var pressure: String = "", var type: String = "")

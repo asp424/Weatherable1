@@ -14,7 +14,7 @@ class App: Application() {
     val appComponent: AppComponent
         get() = checkNotNull(_appComponent)
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+    @ExperimentalCoroutinesApi
     override fun onCreate() {
         super.onCreate()
         _appComponent = DaggerAppComponent.builder()

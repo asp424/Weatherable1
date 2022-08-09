@@ -1,155 +1,114 @@
 package com.example.weatherable.ui.viewmodel
 
-import android.annotation.SuppressLint
-import android.app.job.JobInfo
-import android.app.job.JobInfo.NETWORK_TYPE_ANY
-import android.app.job.JobScheduler
-import android.content.ComponentName
-import android.content.Context
-import android.content.Context.JOB_SCHEDULER_SERVICE
-import android.util.Log
 import androidx.compose.ui.geometry.Offset
-import androidx.lifecycle.*
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.work.*
-import com.example.weatherable.activity.MainActivity
 import com.example.weatherable.data.repository.Repository
 import com.example.weatherable.data.room.bluetooth_db.models.PressureModel
 import com.example.weatherable.data.room.bluetooth_db.models.TempModel
 import com.example.weatherable.data.view_states.BluetoothResponse
 import com.example.weatherable.data.view_states.InternetResponse
-import com.example.weatherable.work.MyJobScheduler
 import com.example.weatherable.work.WorkManagerBluetooth
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
-    private val repository: Repository,
-    private val workManager: WorkManager
-) :
-    ViewModel(),
-    DefaultLifecycleObserver {
+    private val workManager: WorkManager,
+    private val repository: Repository
+) : ViewModel(), DefaultLifecycleObserver {
+
+    override fun onResume(owner: LifecycleOwner) {
+        super.onResume(owner); _bluetoothValues.value = BluetoothResponse.Start; fetchData()
+    }
+
     private val _internetValues: MutableStateFlow<InternetResponse?> =
         MutableStateFlow(InternetResponse.Loading)
+
     val internetValues = _internetValues.asStateFlow()
     private val _internetValuesRefr: MutableStateFlow<Boolean> =
         MutableStateFlow(false)
+
     val internetValuesRefr = _internetValuesRefr.asStateFlow()
     private val _bluetoothValues: MutableStateFlow<BluetoothResponse?> =
         MutableStateFlow(BluetoothResponse.Start)
+
     val bluetoothValues = _bluetoothValues.asStateFlow()
     private val _pointsList: MutableStateFlow<List<Offset>?> =
         MutableStateFlow(emptyList())
+
     val pointsList = _pointsList.asStateFlow()
     private val _presList: MutableStateFlow<List<PressureModel>> =
         MutableStateFlow(emptyList())
+
     val presList = _presList.asStateFlow()
     private val _tempList: MutableStateFlow<List<TempModel>> =
         MutableStateFlow(emptyList())
+
     val tempList = _tempList.asStateFlow()
     private var intJob: Job? = null
 
-    override fun onResume(owner: LifecycleOwner) {
-        super.onResume(owner)
-        _bluetoothValues.value = BluetoothResponse.Start
-        getInternetValues()
-    }
-
-    fun getInternetValues() {
-        _internetValuesRefr.value = true
-        intJob?.cancel()
-        intJob = viewModelScope.launch {
+    fun fetchData() {
+        _internetValuesRefr.value = true; intJob?.cancel(); intJob = coroutine {
             repository.getJsoupData().collect {
-                _internetValues.value = it
-                _internetValuesRefr.value = false
+                _internetValues.value = it; _internetValuesRefr.value = false
             }
         }
     }
 
     private var blueJob: Job? = null
     fun getBluetoothValues() {
-        _bluetoothValues.value = BluetoothResponse.Loading
-        blueJob = viewModelScope.launch {
-            repository.getBluetoothData().collect {
-                _bluetoothValues.value = it
-            }
-        }
-        blueJob?.start()
+        _bluetoothValues.value = BluetoothResponse.Loading; blueJob = coroutine {
+            repository.getBluetoothData().collect { _bluetoothValues.value = it }
+        }; blueJob?.start()
     }
 
     fun stop() {
-        _bluetoothValues.value = BluetoothResponse.Wait
-        intJob?.cancel()
-        blueJob?.cancel()
+        _bluetoothValues.value = BluetoothResponse.Wait; intJob?.cancel(); blueJob?.cancel()
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    override fun onPause(owner: LifecycleOwner) {
+        super.onPause(owner); stopBluetooth()
+    }
+
     fun stopBluetooth() {
-        _bluetoothValues.value = BluetoothResponse.Start
-        intJob?.cancel()
-        blueJob?.cancel()
+        _bluetoothValues.value = BluetoothResponse.Start; intJob?.cancel(); blueJob?.cancel()
     }
 
-    fun getTempsForTable() {
-        viewModelScope.launch(Dispatchers.IO) {
-            if (!repository.getAllTemps().isNullOrEmpty())
-                _tempList.value = repository.getAllTemps()
+    fun getTableData() {
+        coroutine {
+            repository.getAllPressure().collect { if (!it.isNullOrEmpty()) _presList.value = it }
+        }; coroutine {
+            repository.getAllTemps().collect { if (!it.isNullOrEmpty()) _tempList.value = it }
         }
     }
 
-        fun getPresForTable() {
-            viewModelScope.launch(Dispatchers.IO) {
-                if (!repository.getAllPressure().isNullOrEmpty())
-                    _presList.value = repository.getAllPressure()
-            }
-            getTempsForTable()
-        }
+    fun clearTablesValues() =
+        coroutine { with(repository) { clearPressureList(); clearTempsList() } }
 
-        fun clearTablesValues() {
-            viewModelScope.launch(Dispatchers.IO) {
-                repository.clearPressureList()
-                repository.clearTempsList()
-            }
-        }
+    fun runPeriodicWork() = workManager.enqueueUniquePeriodicWork(
+        "per", ExistingPeriodicWorkPolicy.KEEP,
+        PeriodicWorkRequestBuilder<WorkManagerBluetooth>(
+            30, TimeUnit.MINUTES, 5, TimeUnit.MINUTES
+        ).build()
+    )
 
-        fun checkService(mainActivity: MainActivity) =
-            (mainActivity.applicationContext.getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler).allPendingJobs.size == 0
+    fun runOneTimeWork() = workManager.enqueueUniqueWork(
+        "one", ExistingWorkPolicy.KEEP,
+        OneTimeWorkRequestBuilder<WorkManagerBluetooth>().build()
+    )
 
+    fun stopWork() = workManager.cancelAllWork()
 
-        fun scheduleJob(mainActivity: MainActivity) =
-            (mainActivity.applicationContext.getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler).apply {
-                if (allPendingJobs.size == 0)
-                    schedule(
-                        JobInfo.Builder(
-                            123,
-                            ComponentName(mainActivity, MyJobScheduler::class.java)
-                        )
-                            .setRequiresCharging(false).setRequiredNetworkType(NETWORK_TYPE_ANY)
-                            .setPersisted(true).setPeriodic(60 * 60 * 1000L).build()
-                    )
-                else cancelAll()
-            }
-
-        fun runPeriodicWork() = workManager.enqueueUniquePeriodicWork(
-            "per", ExistingPeriodicWorkPolicy.KEEP,
-            PeriodicWorkRequestBuilder<WorkManagerBluetooth>(
-                30, TimeUnit.MINUTES, 5, TimeUnit.MINUTES
-            ).build()
-        )
-
-        fun runOneTimeWork() = workManager.enqueueUniqueWork(
-            "one",
-            ExistingWorkPolicy.KEEP,
-            OneTimeWorkRequestBuilder<WorkManagerBluetooth>().build()
-        )
-
-        fun stateWork() = Log.d("My", workManager.getWorkInfosByTag("a").toString())
-
-        fun stopWork() = workManager.cancelAllWork()
+    private fun coroutine(work: suspend CoroutineScope.() -> Unit) =
+        viewModelScope.launch(IO) { work() }
 
 }

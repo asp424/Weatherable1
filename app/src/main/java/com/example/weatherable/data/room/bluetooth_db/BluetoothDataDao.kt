@@ -7,28 +7,28 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface BluetoothDataDao {
-    @Query("delete from temp_table where id = :id")
-    fun deleteByIdTemp(id: Int)
-    @Query("delete from pressure_table where id = :id")
-    fun deleteByIdPres(id: Int)
-    @Delete
-    fun deleteTemp(item: TempModel)
-    @Delete
-    fun deletePres(item: PressureModel)
-    @Query("select * from temp_table")
-    fun getAllItemsTemp(): List<TempModel>
-    @Query("select * from pressure_table")
-    fun getAllItemsPres(): List<PressureModel>
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Query(getAllTemp)
+    fun getAllItemsTemp(): Flow<List<TempModel>>
+
+    @Query(getAllPress)
+    fun getAllItemsPres(): Flow<List<PressureModel>>
+
+    @Insert(onConflict = replace)
     fun insertOrUpdateItemTemp(item: TempModel): Long
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+
+    @Insert(onConflict = replace)
     fun insertOrUpdateItemPres(item: PressureModel): Long
-    @Query("DELETE FROM temp_table")
+
+    @Query(delAllTemp)
     fun deleteAllTemp()
-    @Query("DELETE FROM pressure_table")
+
+    @Query(delAllPress)
     fun deleteAllPres()
-    @Query("DELETE FROM temp_table WHERE id = :id")
-    fun deleteItemTemp(id: String)
-    @Query("DELETE FROM pressure_table WHERE id = :id")
-    fun deleteItemPres(id: String)
 }
+
+private const val replace = OnConflictStrategy.REPLACE
+private const val getAllTemp = "select * from temp_table"
+private const val getAllPress = "select * from pressure_table"
+private const val delAllPress = "DELETE FROM pressure_table"
+private const val delAllTemp = "DELETE FROM temp_table"
+

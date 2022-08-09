@@ -51,7 +51,6 @@ fun MyCity(dataMyCity: JSONObject) {
         stringResource(id = R.string.yandex_name), stringResource(id = R.string.hydromet_name),
         stringResource(id = R.string.gismeteo_name)
     )
-    val coroutine = rememberCoroutineScope()
     Card(
         modifier = Modifier.padding(start = 10.dp, end = 20.dp),
         elevation = 10.dp,

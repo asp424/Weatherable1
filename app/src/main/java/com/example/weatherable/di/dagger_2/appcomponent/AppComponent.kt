@@ -4,7 +4,6 @@ package com.example.weatherable.di.dagger_2.appcomponent
 import android.app.Application
 import com.example.weatherable.activity.DetailGisActivity
 import com.example.weatherable.activity.DetailYanActivity
-import com.example.weatherable.application.App
 import com.example.weatherable.activity.MainActivity
 import com.example.weatherable.di.dagger_2.models.*
 import com.example.weatherable.di.dagger_2.models.viewmodel.ViewModelFactoryModule
@@ -18,15 +17,16 @@ import javax.inject.Singleton
 
 @ExperimentalCoroutinesApi
 @Singleton
-@Component(modules = [RepositoryModule::class,
+@Component(
+    modules = [RepositoryModule::class,
         JsoupSourceModule::class,
         ViewModelFactoryModule::class,
         RestSourceModule::class,
-    BluetoothSourceModule::class,
-    BluetoothDaoModule::class,
-    DatabaseModule::class, WorkMModule::class,
-    NotificationProviderModule::class, ResourceProviderModule::class
-]
+        DatabaseModule::class, WorkMModule::class,
+        BluetoothSourceModule::class,
+        BluetoothDaoModule::class,
+        NotificationProviderModule::class, ResourceProviderModule::class
+    ]
 
 )
 interface AppComponent {
@@ -35,6 +35,7 @@ interface AppComponent {
     fun inject(activity: DetailGisActivity)
     fun inject(activity: DetailYanActivity)
     fun inject(workManagerBluetooth: WorkManagerBluetooth)
+
     @Component.Builder
     interface Builder {
         @BindsInstance

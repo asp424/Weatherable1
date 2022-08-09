@@ -6,19 +6,32 @@ import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Blue
+import androidx.compose.ui.text.font.FontWeight.Companion.Bold
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.weatherable.R
 import com.example.weatherable.data.room.bluetooth_db.models.PressureModel
 import java.text.SimpleDateFormat
 import java.util.*
 
 
+@RequiresApi(Build.VERSION_CODES.M)
 fun isOnline(context: Context): Boolean {
     val connectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -340,3 +353,39 @@ val <T> T.log get() = Log.d("My", toString())
 typealias LP = List<PressureModel>
 
 typealias SP = SnapshotStateList<Int>
+
+val DarkGreen = Color(0xFF103C12)
+
+val Int.decItem get() = listOf(780, 770, 760, 750, 740)[this]
+val Int.smallItem get() = listOf(0, 8, 6, 4, 2)[this]
+val PressureModel.text get() = "\n${pressure}\n     $type"
+val Int.decLine get() = (this * 120).dp
+fun Int.lineS(s: Int) = decLine + (s * 24).dp
+val String.press get() = substringAfter("7").toFloat()
+val PressureModel.paddingTop get() = with(pressure.press - 80f) { this - this * 13 }
+
+fun LP.padding(i: Int) = (if (get(i).paddingTop.dp > 0.dp) get(i).paddingTop.dp else 0.dp) -
+        if (i == lastIndex) 2.dp else 0.dp
+
+fun Int.border(i: Int) = if (this == i) BorderStroke(2.dp, Color.Red)
+else BorderStroke(0.dp, Color.Transparent)
+
+@Composable
+fun LP.TextV(text: String, i: Int) = Text(
+    text, Modifier.padding(6.dp), when {
+        getStringWasForChat(get(i).id.toLong()).startsWith(" сегодня") -> Blue
+        else -> DarkGreen
+    }, if (i == lastIndex) 12.sp else 8.sp
+)
+
+@Composable
+fun Int.TextS(small: Int) = Text(
+    "${small.smallItem} -", Modifier.offset(36.dp, lineS(small)),
+    fontSize = 12.sp
+)
+
+@Composable
+fun Int.TextB() = Text(
+    "$decItem -", Modifier.offset(10.dp, decLine), fontWeight = Bold
+)
+

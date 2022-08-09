@@ -41,53 +41,53 @@ class BluetoothSource @Inject constructor(
 
     suspend fun runBluetooth(source: String) = callbackFlow {
         launch(Default) { task({ enable }, { task({ close }, { task({ delay(1500L) ; create },
-                            { task({ work(source) { trySend(it) } }, {}, 1) }) }) }) }
+            { task({ work(source) { trySend(it) } }, {}, 1) }) }) }) }
         awaitClose { stop } }.flowOn(IO)
 
     private inline fun PS.task(run: () -> Unit, suc: () -> Unit, type: Int = 0) =
         runCatching { run() }.onSuccess { suc() }.onFailure { if (type == 1) stop
-        trySend(it.error) }
+            trySend(it.error) }
 
     private inline fun PS.work(source: String, crossinline onSend: (BR) -> Unit) {
         var counter = 0; var writeTemp = true; var writePres = true
         connect; success
-            socket!!.inputStream.bufferedReader().use {
-                while (isActive) {
-                    it.readLine().apply {
-                        if (check) {
-                            when (counter) {
-                                0 -> onCycle(writeTemp, { writeTemp(this); writeTemp = false },
-                                        { onSend(temp); counter = 1 })
+        socket!!.inputStream.bufferedReader().use {
+            while (isActive) {
+                it.readLine().apply {
+                    if (check) {
+                        when (counter) {
+                            0 -> onCycle(writeTemp, { writeTemp(this); writeTemp = false },
+                                { onSend(temp); counter = 1 })
 
-                                1 -> onCycle(writePres, { writePress(this, source)
-                                        writePres = false }, { onSend(press); counter = 0 })
-                            }
+                            1 -> onCycle(writePres, { writePress(this, source)
+                                writePres = false }, { onSend(press); counter = 0 })
                         }
                     }
                 }
             }
         }
+    }
 
     private fun onCycle(write: Boolean, onWrite: () -> Unit, onSend: () -> Unit)
     { if (write) { onWrite() }; onSend() }
 
     private val PS.stop get() = runCatching { close }.onSuccess {
-            if (26.checkDisable && checkSelfPermission()) adapter.disable(); wait
-        }
+        if (26.checkDisable && checkSelfPermission()) adapter.disable(); wait
+    }
 
     private fun checkSelfPermission() = if (Build.VERSION.SDK_INT >= 31) { ActivityCompat
         .checkSelfPermission(context, BLUETOOTH_CONNECT) != 0 } else true
 
     private fun writePress(message: String, source: String) = bD.insertOrUpdateItemPres(
-            PressureModel(Calendar.getInstance().time.time.toString(), message, source)
-        )
+        PressureModel(Calendar.getInstance().time.time.toString(), message, source)
+    )
 
     private fun writeTemp(message: String) = bD.insertOrUpdateItemTemp(
         TempModel(Calendar.getInstance().time.time.toString(), message)
     )
 
     private val create get() = if (checkSelfPermission())
-            socket = device.createRfcommSocketToServiceRecord(UUID.fromString(UUID_VAL)) else null
+        socket = device.createRfcommSocketToServiceRecord(UUID.fromString(UUID_VAL)) else null
 
     private val String.check get() = isNotEmpty() && this != "nAn"
     private val Int.checkDisable get() = Build.VERSION.SDK_INT >= this
@@ -106,7 +106,5 @@ class BluetoothSource @Inject constructor(
     fun clearTempList() = bD.deleteAllTemp()
 }
 
-@OptIn(ExperimentalCoroutinesApi::class)
 typealias PS = ProducerScope<BluetoothResponse>
 typealias BR = BluetoothResponse
-

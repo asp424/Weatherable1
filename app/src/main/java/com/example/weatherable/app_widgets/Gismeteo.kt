@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.util.Log
 import android.view.View
 import com.example.weatherable.R

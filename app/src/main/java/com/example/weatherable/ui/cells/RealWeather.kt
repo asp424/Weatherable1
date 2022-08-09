@@ -72,7 +72,7 @@ fun RealWeather(viewModel: MainViewModel) {
                     Modifier
                         .clickable {
                             visibleCard = !visibleCard
-                            viewModel.getPresForTable()
+                            viewModel.getTableData()
                         }
                         .size(40.dp))
             }
@@ -84,7 +84,10 @@ fun RealWeather(viewModel: MainViewModel) {
                 .padding(start = 15.dp, bottom = 70.dp)
                 .fillMaxSize()
         ) {
-            Card(border = BorderStroke(2.dp, Color.Black), modifier = Modifier.padding(end = 6.dp)) {
+            Card(
+                border = BorderStroke(2.dp, Color.Black),
+                modifier = Modifier.padding(end = 6.dp)
+            ) {
                 Icon(
                     Icons.Default.Timer, contentDescription = null,
                     Modifier
@@ -215,7 +218,7 @@ fun RealWeather(viewModel: MainViewModel) {
                             Value(string = pres)
                             when (values) {
                                 is BluetoothResponse.OnSuccess -> {
-                                    viewModel.getPresForTable()
+                                    viewModel.getTableData()
                                     job?.cancel()
                                     coroutine1.launch {
                                         while (scale1 != -0.009999329f) {
@@ -273,6 +276,7 @@ fun RealWeather(viewModel: MainViewModel) {
                                     scale = 0f
                                     scale1 = 1f
                                 }
+                                else -> {}
                             }
                         }
                     }

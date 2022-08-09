@@ -35,7 +35,7 @@ fun WeatherScreen(
     var t by remember { mutableStateOf(0) }
 
     LaunchedEffect(refreshing) {
-        if (refreshing) viewModel.getInternetValues()
+        if (refreshing) viewModel.fetchData()
         else t++
     }
     Text(text = t.toString(), fontSize = 10.sp)
@@ -44,7 +44,7 @@ fun WeatherScreen(
             (values as InternetResponse.OnSuccess).dataValues.apply {
                 SwipeRefresh(
                     state = rememberSwipeRefreshState(isRefreshing = refreshing),
-                    onRefresh = { viewModel.getInternetValues() },
+                    onRefresh = { viewModel.fetchData() },
                     indicator = { state, trigger ->
                         SwipeRefreshIndicator(
                             fade = true,
@@ -102,6 +102,7 @@ fun WeatherScreen(
             }
             LocalLifecycleOwner.current.lifecycle.addObserver(viewModel)
         }
+        else -> {}
     }
     RealWeather(viewModel)
 }
