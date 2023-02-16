@@ -18,7 +18,7 @@ fun Value(
     fontWeight: FontWeight = FontWeight.Medium
 ) {
     Text(
-        text = string!!.repPlus,
+        text = string!!,
         fontSize = 13.sp,
         fontWeight = fontWeight,
         modifier = Modifier

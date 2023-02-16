@@ -1,9 +1,30 @@
 package com.example.weatherable.data.internet.jsoup
 
 import android.content.Context
-import android.util.Log
 import com.example.weatherable.data.view_states.InternetResponse
-import com.example.weatherable.utilites.*
+import com.example.weatherable.utilites.ANA_URL
+import com.example.weatherable.utilites.CHL_URL
+import com.example.weatherable.utilites.CLASS_TEMP
+import com.example.weatherable.utilites.CLASS_WIND
+import com.example.weatherable.utilites.GEL_URL
+import com.example.weatherable.utilites.GID_URL
+import com.example.weatherable.utilites.GIS_ICON_LIST
+import com.example.weatherable.utilites.GIS_ICON_LIST1
+import com.example.weatherable.utilites.GIS_SUN_DOWN
+import com.example.weatherable.utilites.GIS_SUN_DOWN1
+import com.example.weatherable.utilites.GIS_SUN_UP
+import com.example.weatherable.utilites.GIS_SUN_UP1
+import com.example.weatherable.utilites.GIS_TEMP_TOD
+import com.example.weatherable.utilites.KRM_URL
+import com.example.weatherable.utilites.NOV_URL
+import com.example.weatherable.utilites.TAG
+import com.example.weatherable.utilites.YAN_TOD_DETAIL_RAIN
+import com.example.weatherable.utilites.YAN_TOD_DETAIL_TEMP
+import com.example.weatherable.utilites.YAN_URL
+import com.example.weatherable.utilites.checkedCityUrlGisNow
+import com.example.weatherable.utilites.checkedCityUrlGisTod
+import com.example.weatherable.utilites.checkedCityUrlGisTom
+import com.example.weatherable.utilites.checkedCityUrlYanDet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -42,9 +63,15 @@ class JsoupSource {
                             .put("temp", getOnSitesTemps(city, GIS_TEMP_TOD))
                             .put(
                                 "water",
-                                getOnSitesTemps(city, "now-info-item water", flag = 5)
-                                    .toString().substringAfter("\"unit unit_temperature_c\">")
-                                    .substringBefore("</div>").repPlus
+                                with(getOnSitesTemps(city, "now-info-item water", flag = 5)) {
+                                    "${
+                                        toString().substringAfter("<span class=\"sign\">")
+                                            .substringBefore("</span>")
+                                    }${
+                                        toString().substringAfter("</span>")
+                                            .substringBefore("</span>")
+                                    }"
+                                }
                             )
                     )
                 }.onFailure {
@@ -56,24 +83,57 @@ class JsoupSource {
                 }
             }
         }
+
     suspend fun getGisData(context: Context): InternetResponse =
         suspendCoroutine { continuation ->
             CoroutineScope(Dispatchers.IO).launch {
-                val listIconTod = getOnSitesTemps(checkedCityUrlGisTod(context), GIS_ICON_LIST, 0, 5)
-                val listIconTom = getOnSitesTemps(checkedCityUrlGisTom(context), GIS_ICON_LIST, 0, 5)
+                val listIconTod =
+                    getOnSitesTemps(checkedCityUrlGisTod(context), GIS_ICON_LIST, 0, 5)
+                val listIconTom =
+                    getOnSitesTemps(checkedCityUrlGisTom(context), GIS_ICON_LIST, 0, 5)
                 val sunUp = getOnSitesTemps(checkedCityUrlGisNow(context), GIS_SUN_UP)
                 val sunDown = getOnSitesTemps(checkedCityUrlGisNow(context), GIS_SUN_DOWN)
                 continuation.resume(
                     InternetResponse.OnSuccess(
                         JSONObject()
-                            .put("gis_temp_tod", getOnSitesTemps(checkedCityUrlGisTod(context), GIS_TEMP_TOD, 0, 4))
-                            .put("gis_icon_tod", if (listIconTod!!.isEmpty())
-                                getOnSitesTemps(checkedCityUrlGisTod(context), GIS_ICON_LIST1, 0, 5) else listIconTod)
-                            .put("gis_temp_tom", getOnSitesTemps(checkedCityUrlGisTom(context), GIS_TEMP_TOD, 0, 4))
-                            .put("gis_icon_tom", if (listIconTom!!.isEmpty())
-                                getOnSitesTemps(checkedCityUrlGisTom(context), GIS_ICON_LIST1, 0, 5) else listIconTom)
-                            .put("gis_sun_up", if (sunUp!!.isEmpty()) getOnSitesTemps(checkedCityUrlGisNow(context), GIS_SUN_UP1) else sunUp)
-                            .put("gis_sun_down", if (sunDown!!.isEmpty()) getOnSitesTemps(checkedCityUrlGisNow(context), GIS_SUN_DOWN1) else sunDown
+                            .put(
+                                "gis_temp_tod",
+                                getOnSitesTemps(checkedCityUrlGisTod(context), GIS_TEMP_TOD, 0, 4)
+                            )
+                            .put(
+                                "gis_icon_tod", if (listIconTod!!.isEmpty())
+                                    getOnSitesTemps(
+                                        checkedCityUrlGisTod(context),
+                                        GIS_ICON_LIST1,
+                                        0,
+                                        5
+                                    ) else listIconTod
+                            )
+                            .put(
+                                "gis_temp_tom",
+                                getOnSitesTemps(checkedCityUrlGisTom(context), GIS_TEMP_TOD, 0, 4)
+                            )
+                            .put(
+                                "gis_icon_tom", if (listIconTom!!.isEmpty())
+                                    getOnSitesTemps(
+                                        checkedCityUrlGisTom(context),
+                                        GIS_ICON_LIST1,
+                                        0,
+                                        5
+                                    ) else listIconTom
+                            )
+                            .put(
+                                "gis_sun_up",
+                                if (sunUp!!.isEmpty()) getOnSitesTemps(
+                                    checkedCityUrlGisNow(context),
+                                    GIS_SUN_UP1
+                                ) else sunUp
+                            )
+                            .put(
+                                "gis_sun_down",
+                                if (sunDown!!.isEmpty()) getOnSitesTemps(
+                                    checkedCityUrlGisNow(context), GIS_SUN_DOWN1
+                                ) else sunDown
                             )
                     )
                 )
@@ -99,8 +159,11 @@ class JsoupSource {
             }
         }
 
-    private suspend fun valueT(i: Int, context: Context) = getOnSitesTemps(checkedCityUrlYanDet(context), YAN_TOD_DETAIL_TEMP, i)
-    private suspend fun valueR(i: Int, context: Context) = getOnSitesTemps(checkedCityUrlYanDet(context), YAN_TOD_DETAIL_RAIN, i)
+    private suspend fun valueT(i: Int, context: Context) =
+        getOnSitesTemps(checkedCityUrlYanDet(context), YAN_TOD_DETAIL_TEMP, i)
+
+    private suspend fun valueR(i: Int, context: Context) =
+        getOnSitesTemps(checkedCityUrlYanDet(context), YAN_TOD_DETAIL_RAIN, i)
 }
 
 suspend fun getOnSitesTemps(
@@ -113,18 +176,25 @@ suspend fun getOnSitesTemps(
         when (flag) {
             0 -> Jsoup.connect(url).get()
                 .getElementsByClass(classOrTag)[index]?.text()
+
             1 -> Jsoup.connect(url).get()
                 .getElementsByTag(classOrTag)[index]?.text()
+
             2 -> Jsoup.connect(url).get()
                 .getElementsByTag(classOrTag)[index]
+
             3 -> Jsoup.connect(url).get()
                 .getElementsByTag(classOrTag)
+
             4 -> Jsoup.connect(url).get()
                 .getElementsByClass(classOrTag).text()
+
             5 -> Jsoup.connect(url).get()
                 .getElementsByClass(classOrTag)
+
             6 -> Jsoup.connect(url).get()
                 .getElementsByClass(classOrTag).select("unit unit_temperature_c")
+
             else -> {
             }
         }

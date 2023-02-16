@@ -26,7 +26,6 @@ import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class BluetoothSource @Inject constructor(
     private val context: Application,
     private val bD: BluetoothDataDao

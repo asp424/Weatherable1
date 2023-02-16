@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 fun Table(visible: Boolean, viewModel: MainViewModel) {
     viewModel.presList.collectAsState().value.apply {
         val tempPoints by viewModel.tempList.collectAsState()
-        val stateList = rememberLazyListState()
+        val stateList = rememberLazyListState(initialFirstVisibleItemIndex = size)
         var timeVis by remember { mutableStateOf(false) }
         var info by remember { mutableStateOf(Pair("", "")) }
         var sel by remember { mutableStateOf(-1) }

@@ -135,9 +135,9 @@ fun SeaCites(dataCity: JSONObject) {
                         repeat(3) { WaterName() }
                     }
                     Column(modifier = Modifier.padding(start = 10.dp)) {
-                        Value(string = water("nov_value").repD, color = Blue)
-                        Value(string = water("ana_value").repD, color = Blue)
-                        Value(string = water("gel_value").repD, color = Blue)
+                        Value(string = water("nov_value"), color = Blue)
+                        Value(string = water("ana_value"), color = Blue)
+                        Value(string = water("gel_value"), color = Blue)
                     }
                 }
             }
@@ -146,4 +146,7 @@ fun SeaCites(dataCity: JSONObject) {
 }
 
 private fun JSONObject.water(value: String) = getJSONObject(value).getString("water")
+    .apply {
+        log
+    }
 private fun JSONObject.temp(value: String) = getJSONObject(value).getString("temp")
