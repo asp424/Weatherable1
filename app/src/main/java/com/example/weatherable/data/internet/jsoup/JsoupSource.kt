@@ -25,6 +25,7 @@ import com.example.weatherable.utilites.checkedCityUrlGisNow
 import com.example.weatherable.utilites.checkedCityUrlGisTod
 import com.example.weatherable.utilites.checkedCityUrlGisTom
 import com.example.weatherable.utilites.checkedCityUrlYanDet
+import com.example.weatherable.utilites.log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -98,7 +99,7 @@ class JsoupSource {
                         JSONObject()
                             .put(
                                 "gis_temp_tod",
-                                getOnSitesTemps(checkedCityUrlGisTod(context), GIS_TEMP_TOD, 0, 4)
+                                getOnSitesTemps(checkedCityUrlGisTod(context), GIS_TEMP_TOD, 7, 4)
                             )
                             .put(
                                 "gis_icon_tod", if (listIconTod!!.isEmpty())
@@ -174,31 +175,27 @@ suspend fun getOnSitesTemps(
 ): String? = suspendCoroutine { continuation ->
     runCatching {
         when (flag) {
-            0 -> Jsoup.connect(url).get()
-                .getElementsByClass(classOrTag)[index]?.text()
+            0 -> Jsoup.connect(url).get().getElementsByClass(classOrTag)[index]?.text()
 
-            1 -> Jsoup.connect(url).get()
-                .getElementsByTag(classOrTag)[index]?.text()
+            1 -> Jsoup.connect(url).get().getElementsByTag(classOrTag)[index]?.text()
 
-            2 -> Jsoup.connect(url).get()
-                .getElementsByTag(classOrTag)[index]
+            2 -> Jsoup.connect(url).get().getElementsByTag(classOrTag)[index]
 
-            3 -> Jsoup.connect(url).get()
-                .getElementsByTag(classOrTag)
+            3 -> Jsoup.connect(url).get().getElementsByTag(classOrTag)
 
             4 -> Jsoup.connect(url).get()
                 .getElementsByClass(classOrTag).text()
 
-            5 -> Jsoup.connect(url).get()
-                .getElementsByClass(classOrTag)
+            5 -> Jsoup.connect(url).get().getElementsByClass(classOrTag)
 
-            6 -> Jsoup.connect(url).get()
-                .getElementsByClass(classOrTag).select("unit unit_temperature_c")
+            6 -> Jsoup.connect(url).get().getElementsByClass(classOrTag)
+                .select("unit unit_temperature_c")
 
             else -> {
             }
         }
     }.onSuccess {
+        it.log
         continuation.resume(it.toString())
     }.onFailure {
         continuation.resume("Err")

@@ -13,6 +13,7 @@ import com.example.weatherable.ui.screens.gismeteo.cells.ColumnDetail
 import com.example.weatherable.ui.viewmodel.DetailGisViewModel
 import com.example.weatherable.utilites.addItem
 import com.example.weatherable.utilites.addToList
+import com.example.weatherable.utilites.log
 
 @Composable
 fun DetailGis(viewModel: DetailGisViewModel) {
@@ -25,12 +26,16 @@ fun DetailGis(viewModel: DetailGisViewModel) {
         is InternetResponse.OnSuccess -> {
             DetailCard {
                 (values as InternetResponse.OnSuccess).dataValues.apply {
+                    log
                     listTod.addToList(getString("gis_temp_tod"))
                     listTom.addToList(getString("gis_temp_tom"))
                     ColumnDetail(
                         listTod, listTom,
-                        mutableListOf<String>().addItem(getString("gis_icon_tod")),
-                        mutableListOf<String>().addItem(getString("gis_icon_tom"))
+                        mutableListOf<String>().addItem(getString("gis_icon_tod")
+                            ),
+                        mutableListOf<String>().addItem(getString("gis_icon_tom")
+
+                        )
                     )
                 }
             }

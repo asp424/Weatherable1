@@ -52,6 +52,9 @@ fun CardDetailGis(i: Int, image: String, item: String, indexes: IntRange, hour: 
                 modifier = Modifier.size(38.dp)
             )
             Row(horizontalArrangement = Arrangement.Center) {
+                Text(text = image, fontSize = 8.sp, textAlign = TextAlign.Center)
+            }
+            Row(horizontalArrangement = Arrangement.Center) {
                 Text(
                     text = item.repPlus,
                     textAlign = TextAlign.Center,

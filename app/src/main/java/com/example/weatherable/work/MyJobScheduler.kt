@@ -45,7 +45,6 @@ class MyJobScheduler : JobService() {
     }
 
     override fun onStopJob(params: JobParameters?): Boolean {
-        Log.d("My", "Job stop")
         job.cancel()
         return true
     }
@@ -53,6 +52,5 @@ class MyJobScheduler : JobService() {
     override fun onDestroy() {
         super.onDestroy()
         job.cancel()
-        Log.d("My", "dest")
     }
 }

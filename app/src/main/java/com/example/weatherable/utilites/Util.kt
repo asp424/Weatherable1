@@ -134,8 +134,10 @@ fun getIconDayGis(value: String) = when (value) {
     "Пасмурно, снег" -> R.drawable.gis_h
     "Облачно, снег" -> R.drawable.gis_s
     "Пасмурно" -> R.drawable.gis_i
+    "Облачно, без осадков" -> R.drawable.gis_g
     "Облачно" -> R.drawable.gis_c
     "Малооблачно" -> R.drawable.gis_g
+    "Малооблачно, без осадков" -> R.drawable.gis_g
     "Малооблачно, поземок" -> R.drawable.gis_g
     "Малооблачно, снег" -> R.drawable.gis_x
     "Ясно, поземок" -> R.drawable.gis_b
@@ -189,6 +191,7 @@ fun getIconNightGis(value: String) = when (value) {
     "Пасмурно, сильный дождь" -> R.drawable.gis_m
     "Пасмурно, замерзающий дождь" -> R.drawable.gis_e
     "Малооблачно" -> R.drawable.gis_c_n
+    "Облачно, без осадков" -> R.drawable.gis_c_n
     "Малооблачно, туман" -> R.drawable.gis_c_n
     "Малооблачно, поземок" -> R.drawable.gis_c_n
     "Малооблачно, ливневый снег" -> R.drawable.gis_k_n
