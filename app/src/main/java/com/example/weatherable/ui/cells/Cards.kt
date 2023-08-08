@@ -33,7 +33,6 @@ import com.example.weatherable.R
 import com.example.weatherable.activity.MainActivity
 import com.example.weatherable.data.view_states.BluetoothResponse
 import com.example.weatherable.ui.viewmodel.MainViewModel
-import com.example.weatherable.utilites.log
 import com.example.weatherable.utilites.rep
 import com.example.weatherable.utilites.repD
 import com.example.weatherable.utilites.repPlus
@@ -146,7 +145,5 @@ fun SeaCites(dataCity: JSONObject) {
 }
 
 private fun JSONObject.water(value: String) = getJSONObject(value).getString("water")
-    .apply {
-        log
-    }
+
 private fun JSONObject.temp(value: String) = getJSONObject(value).getString("temp")

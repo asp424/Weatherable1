@@ -1,6 +1,7 @@
 package com.example.weatherable.ui.cells
 
 import android.annotation.SuppressLint
+import android.bluetooth.BluetoothAdapter
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons

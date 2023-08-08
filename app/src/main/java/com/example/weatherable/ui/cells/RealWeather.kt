@@ -1,6 +1,7 @@
 package com.example.weatherable.ui.cells
 
 import android.annotation.SuppressLint
+import android.bluetooth.BluetoothAdapter
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.ExperimentalAnimationApi

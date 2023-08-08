@@ -1,9 +1,9 @@
 package com.example.weatherable.data.repository
 
+import android.bluetooth.BluetoothSocket
 import android.content.Context
 import com.example.weatherable.data.bluetooth.BluetoothSource
 import com.example.weatherable.data.internet.jsoup.JsoupSource
-import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
@@ -14,8 +14,8 @@ constructor(
 ) {
     suspend fun getJsoupData() = flow { emit(jsoupSource.getCityValues()) }
 
-    @OptIn(InternalCoroutinesApi::class)
-    suspend fun getBluetoothData(source: String = "") = bluetoothSource.runBluetooth(source)
+    suspend fun getBluetoothData(source: String = "")
+    = bluetoothSource.runBluetooth(source)
 
     fun getAllTemps() = bluetoothSource.getAllTemps()
     fun getAllPressure() = bluetoothSource.getAllPressure()

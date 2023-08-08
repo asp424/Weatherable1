@@ -1,30 +1,54 @@
 package com.example.weatherable.permissions
 
-import android.content.pm.PackageManager
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import android.Manifest.permission.BLUETOOTH_ADMIN
+import android.Manifest.permission.BLUETOOTH_CONNECT
+import android.Manifest.permission.BLUETOOTH_SCAN
+import android.Manifest.permission.POST_NOTIFICATIONS
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.RECORD_AUDIO
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+import android.os.Build
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import com.example.weatherable.activity.MainActivity
+import javax.inject.Inject
+import javax.inject.Named
 
+interface Permissions {
 
-const val WRITE_PERM = android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-const val READ_CONTACTS = android.Manifest.permission.READ_CONTACTS
+    fun launchIfHasPermissions(activity: MainActivity, unit: () -> Unit = {})
 
+    class Base @Inject constructor(
+        @Named("hasPerm") private val hasPermissions: () -> Boolean
+    ) : Permissions {
 
+        private fun permissionsLauncherRegistration(
+            activity: MainActivity,
+            onAllPermissionsGet: () -> Unit
+        ) = activity.registerForActivityResult(
 
-fun checkPermissions(
-    permission: String,
-    mainActivity: MainActivity
-): Boolean {
-    return if (ContextCompat.checkSelfPermission(
-            mainActivity,
-            permission
-        ) != PackageManager.PERMISSION_GRANTED
-    ) {
-        ActivityCompat.requestPermissions(
-            mainActivity,
-            arrayOf(permission),
-            200
-        )
-        false
-    } else true
+            ActivityResultContracts.RequestMultiplePermissions()
+
+        ) { result ->
+            if (result.entries.all { it.value }) onAllPermissionsGet()
+        }
+
+        @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+        override fun launchIfHasPermissions(activity: MainActivity, unit: () -> Unit) {
+
+            if (hasPermissions()) unit() else
+                permissionsLauncherRegistration(activity) { unit() }.launch(listOfPerm)
+        }
+
+        companion object {
+            @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+            val listOfPerm = arrayOf(
+                BLUETOOTH_CONNECT, BLUETOOTH_SCAN
+            )
+        }
+    }
 }
+
+
+
+

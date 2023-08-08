@@ -4,7 +4,7 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.asp424.weather",
+  "applicationId": "com.example.weatherable",
   "variantName": "release",
   "elements": [
     {

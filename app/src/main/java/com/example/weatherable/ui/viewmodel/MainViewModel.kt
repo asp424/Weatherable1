@@ -1,5 +1,6 @@
 package com.example.weatherable.ui.viewmodel
 
+import android.bluetooth.BluetoothSocket
 import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -85,9 +86,9 @@ class MainViewModel @Inject constructor(
 
     fun getTableData() {
         coroutine {
-            repository.getAllPressure().collect { if (!it.isNullOrEmpty()) _presList.value = it }
+            repository.getAllPressure().collect { if (it.isNotEmpty()) _presList.value = it }
         }; coroutine {
-            repository.getAllTemps().collect { if (!it.isNullOrEmpty()) _tempList.value = it }
+            repository.getAllTemps().collect { if (it.isNotEmpty()) _tempList.value = it }
         }
     }
 

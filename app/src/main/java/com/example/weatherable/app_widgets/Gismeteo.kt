@@ -2,6 +2,7 @@ package com.example.weatherable.app_widgets
 
 import android.annotation.SuppressLint
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
@@ -75,7 +76,6 @@ internal suspend fun updateGisAppWidget(
 ) {
     updateGisViews(context, appWidgetManager) {
         appWidgetManager.updateAppWidget(getStateScreen(context, "gis"), VIEWS_GIS)
-        Log.d("My", getStateScreen(context, "gis").toString())
     }
 }
 
@@ -104,7 +104,7 @@ suspend fun updateGisViews(
             PendingIntent.getActivity(
                 context, 0,
                 Intent(context, DetailGisActivity::class.java)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK), 0
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK), FLAG_IMMUTABLE
             )
         )
         setOnClickPendingIntent(
@@ -119,6 +119,7 @@ suspend fun updateGisViews(
             setImageViewResource(R.id.image_now_gis, getIconDayGis(value))
             setViewVisibility(R.id.progress_gis, View.GONE)
             function()
+
         } else {
             setImageViewResource(R.id.image_now_gis, getIconNightGis(value))
             setViewVisibility(R.id.progress_gis, View.GONE)

@@ -2,6 +2,7 @@ package com.example.weatherable.app_widgets
 
 import android.annotation.SuppressLint
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
@@ -112,7 +113,7 @@ suspend fun updateYanViews(context: Context?, appWidgetManager: AppWidgetManager
             PendingIntent.getActivity(
                 context, 0,
                 Intent(context, DetailYanActivity::class.java)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK), 0
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK), FLAG_IMMUTABLE
             )
         )
         setTextViewText(

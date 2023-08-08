@@ -2,6 +2,7 @@ package com.example.weatherable.utilites
 
 import android.annotation.SuppressLint
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
@@ -61,7 +62,7 @@ fun getPendingSelfIntent(
 ): PendingIntent? {
     val intent = Intent(context, classWidget)
     intent.action = action
-    return PendingIntent.getBroadcast(context, 0, intent, 0)
+    return PendingIntent.getBroadcast(context, 0, intent, FLAG_IMMUTABLE)
 }
 
 val String.sA: String

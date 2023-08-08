@@ -24,7 +24,6 @@ fun Value(
         modifier = Modifier
             .padding(3.dp)
             .padding(end = 4.dp, start = 6.dp),
-
         style = TextStyle(color = color), textAlign = TextAlign.Center
     )
 }

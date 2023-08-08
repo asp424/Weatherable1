@@ -1,13 +1,23 @@
 package com.example.weatherable.ui.screens
 
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.Blue
@@ -16,7 +26,11 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.weatherable.data.view_states.InternetResponse
-import com.example.weatherable.ui.cells.*
+import com.example.weatherable.ui.cells.BackgroundImage
+import com.example.weatherable.ui.cells.Chelyabinsk
+import com.example.weatherable.ui.cells.MyCity
+import com.example.weatherable.ui.cells.RealWeather
+import com.example.weatherable.ui.cells.SeaCites
 import com.example.weatherable.ui.viewmodel.MainViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
@@ -24,11 +38,8 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import org.json.JSONObject
 
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun WeatherScreen(
-    viewModel: MainViewModel
-) {
+fun WeatherScreen(viewModel: MainViewModel) {
     BackgroundImage()
     val values by remember(viewModel) { viewModel.internetValues }.collectAsState()
     val refreshing by viewModel.internetValuesRefr.collectAsState()
@@ -91,6 +102,7 @@ fun WeatherScreen(
                 }
             }
         }
+
         is InternetResponse.Loading -> {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -102,6 +114,7 @@ fun WeatherScreen(
             }
             LocalLifecycleOwner.current.lifecycle.addObserver(viewModel)
         }
+
         else -> {}
     }
     RealWeather(viewModel)

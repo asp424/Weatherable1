@@ -25,9 +25,8 @@ class MyJobScheduler : JobService() {
     }
 
     override fun onStartJob(params: JobParameters?): Boolean {
-        Log.d("My", "Job started")
         if (job.isActive) job.cancel()
-        job = CoroutineScope(IO).launch { repository.getBluetoothData().collect(::collector) }
+        //job = CoroutineScope(IO).launch { repository.getBluetoothData().collect(::collector) }
         return true
     }
 

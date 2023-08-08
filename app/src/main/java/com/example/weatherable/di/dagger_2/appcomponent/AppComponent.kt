@@ -25,7 +25,10 @@ import javax.inject.Singleton
         DatabaseModule::class, WorkMModule::class,
         BluetoothSourceModule::class,
         BluetoothDaoModule::class,
-        NotificationProviderModule::class, ResourceProviderModule::class
+        NotificationProviderModule::class,
+        ResourceProviderModule::class,
+        PermissionsModule::class,
+        HasPermissionsModule::class
     ]
 
 )

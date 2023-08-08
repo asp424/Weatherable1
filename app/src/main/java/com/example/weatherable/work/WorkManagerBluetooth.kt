@@ -1,7 +1,6 @@
 package com.example.weatherable.work
 
 import android.content.Context
-import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.example.weatherable.NotificationProvider
@@ -29,9 +28,7 @@ class WorkManagerBluetooth(
 
     private var job: Job = Job()
 
-    @OptIn(InternalCoroutinesApi::class)
     override fun doWork(): Result {
-        Log.d("My", "Job started")
         if (job.isActive) job.cancel()
         job = collector()
         notificationProvider.notification()
@@ -40,20 +37,19 @@ class WorkManagerBluetooth(
 
     private fun collector() =
         CoroutineScope(Dispatchers.IO).launch {
-            repository.getBluetoothData("a").collect {
+           /* repository.getBluetoothData("a").collect {
                 when (it) {
                     is BluetoothResponse.OnSuccess -> {
                         delay(2000L)
-                        Log.d("My", "suc")
-
                         job.cancel()
                     }
                     is BluetoothResponse.Error -> {
-                        Log.d("My", "err")
                         job.cancel()
                     }
                     else -> {}
                 }
             }
+
+            */
         }
 }
