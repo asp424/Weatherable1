@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/app_widget_background1"
@@ -21,7 +22,8 @@
         android:textSize="8sp"
         android:layout_marginBottom="2dp"
         android:layout_alignParentBottom="true"
-        android:layout_centerInParent="true" />
+        android:layout_centerInParent="true"
+        tools:ignore="SmallSp" />
 
     <ProgressBar
         android:id="@+id/progress_gis"
@@ -29,6 +31,17 @@
         android:layout_centerInParent="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/sky"
+        android:textSize="8sp"
+        android:paddingTop="10dp"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:gravity="center"
+        tools:ignore="RelativeOverlap,SmallSp" />
 
     <TextView
         android:layout_alignParentBottom="true"

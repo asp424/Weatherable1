@@ -16,10 +16,20 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
 import com.example.weatherable.utilites.getIconDayGis
 import com.example.weatherable.utilites.getIconNightGis
+import com.example.weatherable.utilites.log
 import com.example.weatherable.utilites.repPlus
 
 @Composable
-fun CardDetailGis(i: Int, image: String, item: String, indexes: IntRange, hour: Int) {
+fun CardDetailGis(
+    i: Int,
+    image: String,
+    item: String,
+    indexes: IntRange,
+    hour: Int,
+    sunUp: Int,
+    sunDown: Int
+) {
+    hour.log
     val min = "00"
     val listHour = listOf("0", "3", "6", "9", "12", "15", "18", "21")
     Card(
@@ -45,8 +55,8 @@ fun CardDetailGis(i: Int, image: String, item: String, indexes: IntRange, hour: 
             }
             Image(
                 painter = rememberImagePainter(
-                    if (i in indexes) getIconNightGis(image)
-                    else getIconDayGis(image)
+                    if ("${listHour[hour]}00".toInt() !in sunUp .. sunDown)
+                        getIconNightGis(image)  else getIconDayGis(image)
                 ),
                 contentDescription = null,
                 modifier = Modifier.size(38.dp)

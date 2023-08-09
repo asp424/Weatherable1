@@ -195,7 +195,6 @@ suspend fun getOnSitesTemps(
             }
         }
     }.onSuccess {
-        it.log
         continuation.resume(it.toString())
     }.onFailure {
         continuation.resume("Err")

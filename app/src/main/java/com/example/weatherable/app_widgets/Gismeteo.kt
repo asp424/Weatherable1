@@ -113,13 +113,12 @@ suspend fun updateGisViews(
         )
         setTextViewText(R.id.gis_text, getOnSitesTemps(checkedCityUrlGisTod(context),
             GIS_TEMP_TOD)?.repPlus + " °C")
-
+        setTextViewText(R.id.sky, value)
         if (nowTime.rep in sunUp..sunDown || nowTime.rep in sunDown..sunUp
         ) {
             setImageViewResource(R.id.image_now_gis, getIconDayGis(value))
             setViewVisibility(R.id.progress_gis, View.GONE)
             function()
-
         } else {
             setImageViewResource(R.id.image_now_gis, getIconNightGis(value))
             setViewVisibility(R.id.progress_gis, View.GONE)

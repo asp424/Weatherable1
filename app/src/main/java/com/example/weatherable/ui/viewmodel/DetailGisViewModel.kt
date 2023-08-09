@@ -19,7 +19,7 @@ class DetailGisViewModel @Inject constructor(private val repository: Repository)
         super.onResume(owner)
         getGisData(owner as Context)
     }
-    fun getGisData(context: Context) {
+    private fun getGisData(context: Context) {
         viewModelScope.launch {
             repository.getGisData(context).collect {
                 _internetValues.value = it

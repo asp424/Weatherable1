@@ -107,7 +107,7 @@ fun MutableList<String>.addToList(value: String) {
     this.add(item)
 }
 
-fun getIconDayGis(value: String) = when (value) {
+fun  getIconDayGis(value: String) = when (value) {
     "Пасмурно, ливневые осадки" -> R.drawable.gis_e
     "Пасмурно, небольшие осадки" -> R.drawable.gis_u
     "Облачно, небольшой снег" -> R.drawable.gis_d
@@ -134,7 +134,8 @@ fun getIconDayGis(value: String) = when (value) {
     "Пасмурно, снег" -> R.drawable.gis_h
     "Облачно, снег" -> R.drawable.gis_s
     "Пасмурно" -> R.drawable.gis_i
-    "Облачно, без осадков" -> R.drawable.gis_g
+    "Пасмурно, без осадков" -> R.drawable.gis_i
+    "Облачно, без осадков" -> R.drawable.gis_c
     "Облачно" -> R.drawable.gis_c
     "Малооблачно" -> R.drawable.gis_g
     "Малооблачно, без осадков" -> R.drawable.gis_g
@@ -154,6 +155,7 @@ fun getIconDayGis(value: String) = when (value) {
     "Облачно, ливневый дождь" -> R.drawable.gis_j
     "Малооблачно, ливневые осадки" -> R.drawable.gis_q
     "Малооблачно, небольшие осадки" -> R.drawable.gis_v
+    "Малооблачно, небольшой  дождь" -> R.drawable.gis_v
     "Пасмурно, ливневый снег" -> R.drawable.gis_h
     "Малооблачно, ливневый дождь" -> R.drawable.gis_r
     "Пасмурно, осадки" -> R.drawable.gis_e
@@ -168,6 +170,7 @@ fun getIconNightGis(value: String) = when (value) {
     "Облачно, небольшой снег" -> R.drawable.gis_j_n
     "Пасмурно, снежные зёрна" -> R.drawable.gis_h
     "Пасмурно, дымка" -> R.drawable.gis_i
+    "Пасмурно, без осадков" -> R.drawable.gis_i
     "Пасмурно, небольшой мокрый снег" -> R.drawable.gis_u
     "Пасмурно, небольшой снег с дождём" -> R.drawable.gis_u
     "Пасмурно, сильный снег" -> R.drawable.gis_w
@@ -201,10 +204,12 @@ fun getIconNightGis(value: String) = when (value) {
     "Ясно, поземок" -> R.drawable.gis_b_n
     "Малооблачно, небольшой снег" -> R.drawable.gis_d_n
     "Малооблачно, дождь" -> R.drawable.gis_e_n
+    "Малооблачно, небольшой  дождь" -> R.drawable.gis_e_n
     "Малооблачно, ливневые осадки" -> R.drawable.gis_q_n
     "Облачно, дождь" -> R.drawable.gis_f_n
     "Малооблачно, небольшой дождь" -> R.drawable.gis_t_n
     "Малооблачно, дымка" -> R.drawable.gis_c_n
+    "Малооблачно, без осадков" -> R.drawable.gis_c_n
     "Облачно, небольшой дождь" -> R.drawable.gis_h_n
     "Переменная облачность, сильные осадки" -> R.drawable.gis_g_n
     "Переменная облачность, небольшой дождь" -> R.drawable.gis_h_n
